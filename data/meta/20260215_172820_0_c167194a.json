@@ -1,0 +1,20 @@
+{
+  "clip_id": "c167194a-5ede-4c12-881d-d2192f25caef",
+  "file_path": "clips\\20260215_172820_0_c167194a.mp4",
+  "camera_id": "0",
+  "camera_name": "기본 웹캠",
+  "start_time": "2026-02-15T17:28:16.087946",
+  "end_time": "2026-02-15T17:28:20.663011",
+  "duration_seconds": 4.575065,
+  "frame_count": 104,
+  "fps": 30,
+  "resolution": [
+    1280,
+    720
+  ],
+  "event_time": "2026-02-15T17:28:20.663011",
+  "event_type": "object_placed",
+  "confidence": 0.8042236921201087,
+  "thumbnail_path": "thumbs\\c167194a_thumb.jpg",
+  "notes": "물체 크기: 444x110"
+}
