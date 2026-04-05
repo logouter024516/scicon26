@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="12b7f86e-894f-40df-bfc0-9398a1adb6b5" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/ai/MissingFind_Copilot_Spec.docx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ai/paper.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/00_scicon26_ocr.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GUI_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/IMPROVEMENT_SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SETUP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/STAGE2_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/YOLO_WORLD_TEST_GUIDE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.progress.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/prompt.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/check_install.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202300_0_e7e0c82b.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202312_0_4350018a.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202338_0_2e8b7a21.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202351_0_742b69ea.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202556_0_d573551a.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202603_0_2ec9b4b2.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202612_0_14d9bbaf.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202619_0_9f1e75fc.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202628_0_d1fb4b82.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202633_0_01917289.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260209_202638_0_fadee1d1.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_171602_0_c6c8afc4.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_171609_0_6a092e9e.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_171615_0_7ec41f36.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_171620_0_ec784d05.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_171626_0_31c2a2fd.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172744_0_4125fa4b.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172753_0_4542c14c.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172805_0_2ba62b12.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172810_0_98bc46ff.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172815_0_54a34b0b.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172820_0_c167194a.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260215_172825_0_649c02c5.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260301_173353_0_cd320094.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260301_173358_0_918d1f71.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260301_173404_0_4045d171.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/clips/20260301_173411_0_687eb212.mp4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202300_0_e7e0c82b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202312_0_4350018a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202338_0_2e8b7a21.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202351_0_742b69ea.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202556_0_d573551a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202603_0_2ec9b4b2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202612_0_14d9bbaf.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202619_0_9f1e75fc.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202628_0_d1fb4b82.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202633_0_01917289.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260209_202638_0_fadee1d1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_171602_0_c6c8afc4.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_171609_0_6a092e9e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_171615_0_7ec41f36.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_171620_0_ec784d05.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_171626_0_31c2a2fd.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172744_0_4125fa4b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172753_0_4542c14c.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172805_0_2ba62b12.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172810_0_98bc46ff.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172815_0_54a34b0b.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172820_0_c167194a.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260215_172825_0_649c02c5.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260301_173353_0_cd320094.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260301_173358_0_918d1f71.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260301_173404_0_4045d171.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/meta/20260301_173411_0_687eb212.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/01917289_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/14d9bbaf_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/2ba62b12_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/2e8b7a21_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/2ec9b4b2_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/31c2a2fd_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/4045d171_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/4125fa4b_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/4350018a_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/4542c14c_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/54a34b0b_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/649c02c5_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/687eb212_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/6a092e9e_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/742b69ea_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/7ec41f36_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/918d1f71_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/98bc46ff_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/9f1e75fc_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/c167194a_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/c6c8afc4_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/cd320094_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/d1fb4b82_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/d573551a_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/e7e0c82b_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/ec784d05_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/thumbs/fadee1d1_thumb.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/missingfind.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/missingfind_react/frontend/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/project/missingfind_react/frontend/components.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/missingfind_react/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/project/missingfind_react/frontend/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/missingfind_react/frontend/src/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/project/missingfind_react/frontend/src/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/missingfind_react/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/project/missingfind_react/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements_stage2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_gui.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_gui.ps1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.idea/src.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analyze/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analyze/test_yolo_world.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/analyze/yolov8x-worldv2.pt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/streamlit_app.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/camera.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/clip_recorder.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/event_detector.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/logs/missingfind.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/capture/test_camera.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/config_loader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/logger.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yolov8x-worldv2.pt" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_D:/01_prj/00_scicon26_ocr" value="39QRkA5VqPrwlLQAxYxcuYyVBej" />
+    </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="Agent" />
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="chat-panel" value="GPT-5.1-Codex-Max" />
+      <entry key="agent-panel" value="GPT-5.1-Codex-Max" />
+    </selectedModels>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/app/live_search_app.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="39QRkA5VqPrwlLQAxYxcuYyVBej" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.streamlit_app.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_yolo_world.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/01_prj/00_scicon26_ocr/ai&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.chat.ChatConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\01_prj\00_scicon26_ocr\ai" />
+      <recent name="D:\01_prj\00_scicon26_ocr" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\01_prj\00_scicon26_ocr\ai" />
+    </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="pip install -r requirements.txt" />
+    </option>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.29346.308" />
+        <option value="bundled-python-sdk-ca5e2b39c7df-6e1f45a539f7-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.29346.308" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="12b7f86e-894f-40df-bfc0-9398a1adb6b5" name="변경" comment="" />
+      <created>1770626450020</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770626450020</updated>
+      <workItem from="1770626450904" duration="8191000" />
+      <workItem from="1771142305293" duration="2345000" />
+      <workItem from="1772354316015" duration="2517000" />
+      <workItem from="1772956682874" duration="2657000" />
+      <workItem from="1772959558299" duration="3642000" />
+      <workItem from="1773554512640" duration="739000" />
+      <workItem from="1773561870773" duration="386000" />
+      <workItem from="1773562282590" duration="9519000" />
+      <workItem from="1774160503377" duration="1276000" />
+      <workItem from="1774770807015" duration="98000" />
+      <workItem from="1775374042926" duration="32000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/00_scicon26_ocr$streamlit_app.coverage" NAME="streamlit_app 커버리지 결과" MODIFIED="1771142370054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/app" />
+    <SUITE FILE_PATH="coverage/00_scicon26_ocr$main.coverage" NAME="main 커버리지 결과" MODIFIED="1771142362285" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/capture" />
+    <SUITE FILE_PATH="coverage/00_scicon26_ocr$test_yolo_world.coverage" NAME="test_yolo_world 커버리지 결과" MODIFIED="1771142325017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/analyze" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

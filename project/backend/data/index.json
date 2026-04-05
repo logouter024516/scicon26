@@ -1,0 +1,53 @@
+{
+  "clips": [
+    {
+      "clip_id": "20260405_185051_204622",
+      "event_at": "2026-04-05T18:50:51",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185051_204622.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185051_204622.jpg"
+    },
+    {
+      "clip_id": "20260405_185103_874620",
+      "event_at": "2026-04-05T18:51:04",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185103_874620.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185103_874620.jpg"
+    },
+    {
+      "clip_id": "20260405_185110_607615",
+      "event_at": "2026-04-05T18:51:10",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185110_607615.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185110_607615.jpg"
+    },
+    {
+      "clip_id": "20260405_185220_294015",
+      "event_at": "2026-04-05T18:52:20",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185220_294015.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185220_294015.jpg"
+    },
+    {
+      "clip_id": "20260405_185246_798770",
+      "event_at": "2026-04-05T18:52:46",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185246_798770.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185246_798770.jpg"
+    },
+    {
+      "clip_id": "20260405_185258_473821",
+      "event_at": "2026-04-05T18:52:58",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185258_473821.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185258_473821.jpg"
+    },
+    {
+      "clip_id": "20260405_185305_649053",
+      "event_at": "2026-04-05T18:53:05",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260405_185305_649053.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260405_185305_649053.jpg"
+    }
+  ]
+}
