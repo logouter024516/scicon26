@@ -12,6 +12,7 @@ export function CapturePage() {
   const [error, setError] = useState<string | null>(null);
   const [previewTick, setPreviewTick] = useState(Date.now());
   const [previewError, setPreviewError] = useState(false);
+  const [previewSrc, setPreviewSrc] = useState('');
 
   async function refreshState() {
     setError(null);
@@ -29,9 +30,31 @@ export function CapturePage() {
   }, []);
 
   useEffect(() => {
-    const t = window.setInterval(() => setPreviewTick(Date.now()), 700);
+    const t = window.setInterval(() => setPreviewTick(Date.now()), 850);
     return () => window.clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    const nextUrl = apiClient.capturePreviewUrl(previewTick);
+    if (!nextUrl) return;
+
+    let cancelled = false;
+    const probe = new Image();
+    probe.onload = () => {
+      if (cancelled) return;
+      setPreviewSrc(nextUrl);
+      setPreviewError(false);
+    };
+    probe.onerror = () => {
+      if (cancelled) return;
+      setPreviewError(true);
+    };
+    probe.src = nextUrl;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [previewTick]);
 
   async function onStart() {
     setLoading(true);
@@ -90,13 +113,11 @@ export function CapturePage() {
           <h3 className="panel-title">Runtime Status & Preview</h3>
 
           <div className="preview-shell">
-            {apiClient.capturePreviewUrl(previewTick) && (
+            {previewSrc && (
               <img
-                src={apiClient.capturePreviewUrl(previewTick)}
+                src={previewSrc}
                 alt="camera-preview"
                 className="preview-image"
-                onError={() => setPreviewError(true)}
-                onLoad={() => setPreviewError(false)}
               />
             )}
             {previewError && <p className="empty-state">No preview frame yet. Start capture first.</p>}

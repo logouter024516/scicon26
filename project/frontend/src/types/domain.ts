@@ -51,4 +51,6 @@ export interface QuickResultDto {
 
 export interface RegisteredItemDto {
   name: string;
+  thumbFile?: string;
+  createdAt?: string;
 }

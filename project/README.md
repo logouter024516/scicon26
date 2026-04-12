@@ -50,7 +50,7 @@ project/
 ```bash
 cd backend
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --app-dir . --host 127.0.0.1 --port 8080 --reload
 ```
 
 ### 2) Frontend
@@ -75,11 +75,13 @@ Frontend:
 ## 실제 동작(현재 구현)
 
 - Capture: OpenCV MOG2 기반 이벤트 감지 후 로컬 `backend/data/clips`에 MP4 저장
-- Live Search: 실시간 프레임(미리보기 우선, 없으면 웹캠)에서
-  - 등록 물건: 색상 히스토그램 유사도 매칭
-  - 미등록 물건: 색상 키워드(black/white/red/blue/green/yellow) 기반 휴리스틱
-- Quick Search: 저장된 클립을 샘플링하여 질의 점수 상위 결과 반환
+- Live Search: YOLO-World(Open-Vocabulary) 우선 탐지, 실패 시 기존 휴리스틱 fallback
+- Quick Search: OpenAI CLIP(ViT-B/32) 기반 이미지-텍스트 유사도 검색, 실패 시 fallback
 - Register: 이미지 업로드 기반 등록(히스토그램 임베딩 저장)
+
+추가 설정 파일:
+
+- `backend/config.yaml` (카메라 소스, 감지 임계값, 모델 옵션)
 
 ### 2단계 계층형 검색
 

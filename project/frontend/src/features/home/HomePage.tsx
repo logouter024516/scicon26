@@ -14,7 +14,6 @@ function greeting(): string {
 
 export function HomePage() {
   const { summary, clips, loading, error, refresh } = useDashboardData();
-  const [previewClipId, setPreviewClipId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -133,9 +132,6 @@ export function HomePage() {
                 <p className="recent-value">{c.cameraId}</p>
               </div>
               <div className="recent-actions">
-                <Button className="btn-intent-preview" variant="outline" onClick={() => setPreviewClipId(c.clipId)}>
-                  Preview
-                </Button>
                 <Button className="btn-intent-quick" variant="ghost" onClick={() => goQuickTab(c.clipId, c.cameraId)}>
                   Quick
                 </Button>
@@ -147,18 +143,6 @@ export function HomePage() {
           ))
         )}
       </div>
-
-      <Modal open={previewClipId !== null} onClose={() => setPreviewClipId(null)} title="Clip Preview">
-        {previewClipId ? (
-          <video
-            className="result-video"
-            src={apiClient.clipUrl(clips.find((x) => x.clipId === previewClipId)?.clipFile || `${previewClipId}.mp4`)}
-            controls
-            autoPlay
-            preload="metadata"
-          />
-        ) : null}
-      </Modal>
 
       <Modal open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} title="Delete Clip">
         <p className="muted" style={{ marginBottom: 12 }}>

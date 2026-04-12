@@ -21,6 +21,14 @@ class Paths:
         return self.base / 'thumbs'
 
     @property
+    def previews(self) -> Path:
+        return self.base / 'previews'
+
+    @property
+    def registered(self) -> Path:
+        return self.base / 'registered'
+
+    @property
     def preview(self) -> Path:
         return self.base / 'preview.jpg'
 
@@ -32,8 +40,18 @@ class Paths:
     def registry_file(self) -> Path:
         return self.base / 'registry.json'
 
+    @property
+    def registered_meta_file(self) -> Path:
+        return self.base / 'registered_meta.json'
+
+    @property
+    def cameras_file(self) -> Path:
+        return self.base / 'cameras.json'
+
 
 def ensure_dirs(paths: Paths) -> None:
     paths.base.mkdir(parents=True, exist_ok=True)
     paths.clips.mkdir(parents=True, exist_ok=True)
     paths.thumbs.mkdir(parents=True, exist_ok=True)
+    paths.previews.mkdir(parents=True, exist_ok=True)
+    paths.registered.mkdir(parents=True, exist_ok=True)

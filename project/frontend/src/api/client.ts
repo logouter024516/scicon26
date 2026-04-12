@@ -51,9 +51,19 @@ export const apiClient = {
     return `${API_BASE}/api/v1/files/clips/${encodeURIComponent(fileName)}`;
   },
 
+  clipMjpegUrl(fileName?: string, fps = 12): string {
+    if (!fileName) return '';
+    return `${API_BASE}/api/v1/files/clips-mjpeg/${encodeURIComponent(fileName)}?fps=${fps}`;
+  },
+
   thumbUrl(fileName?: string): string {
     if (!fileName) return '';
     return `${API_BASE}/api/v1/files/thumbs/${encodeURIComponent(fileName)}`;
+  },
+
+  registeredImageUrl(fileName?: string): string {
+    if (!fileName) return '';
+    return `${API_BASE}/api/v1/files/registered/${encodeURIComponent(fileName)}`;
   },
 
   async health(): Promise<HealthDto> {
@@ -113,6 +123,28 @@ export const apiClient = {
       method: 'POST',
       body: JSON.stringify({ query, cameraIndex }),
     });
+  },
+
+  async liveSearchImage(query: string, imageBlob: Blob, fileName = 'frame.jpg'): Promise<LiveResultDto> {
+    if (USE_MOCK) {
+      const score = query.trim().length > 2 ? 0.76 : 0.38;
+      return {
+        found: score >= 0.5,
+        score,
+        detail: `mock live image response for ${query}`,
+      };
+    }
+    const form = new FormData();
+    form.set('query', query);
+    form.append('image', imageBlob, fileName);
+    const res = await fetch(`${API_BASE}/api/v1/live/search-image`, {
+      method: 'POST',
+      body: form,
+    });
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${await res.text()}`);
+    }
+    return (await res.json()) as LiveResultDto;
   },
 
   async pipelineFind(query: string, cameraIndex = 0, topK = 5): Promise<PipelineResultDto> {

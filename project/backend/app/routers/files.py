@@ -1,9 +1,10 @@
 from pathlib import Path
+import time
 
 import cv2
 import numpy as np
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 
 from app.store import store
 from app.utils import read_json, write_json
@@ -70,7 +71,49 @@ def get_clip(name: str):
     path = store.paths.clips / safe
     if not path.exists():
         raise HTTPException(status_code=404, detail='clip not found')
-    return FileResponse(str(path), media_type='video/mp4')
+    return FileResponse(
+        str(path),
+        media_type='video/mp4',
+        filename=safe,
+        headers={
+            'Content-Disposition': f'inline; filename="{safe}"',
+            'Accept-Ranges': 'bytes',
+        },
+    )
+
+
+@router.get('/clips-mjpeg/{name}')
+def get_clip_mjpeg(name: str, fps: int = 12):
+    safe = _safe_name(name)
+    path = store.paths.clips / safe
+    if not path.exists():
+        raise HTTPException(status_code=404, detail='clip not found')
+
+    fps = max(1, min(int(fps), 30))
+
+    def gen():
+        cap = cv2.VideoCapture(str(path))
+        if not cap.isOpened():
+            return
+        delay = 1.0 / float(fps)
+        try:
+            while True:
+                ok, frame = cap.read()
+                if not ok or frame is None:
+                    break
+                ok_jpg, buf = cv2.imencode('.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
+                if not ok_jpg:
+                    continue
+                yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + buf.tobytes() + b'\r\n'
+                time.sleep(delay)
+        finally:
+            cap.release()
+
+    return StreamingResponse(
+        gen(),
+        media_type='multipart/x-mixed-replace; boundary=frame',
+        headers={'Cache-Control': 'no-store, max-age=0'},
+    )
 
 
 @router.get('/thumbs/{name}')
@@ -81,6 +124,15 @@ def get_thumb(name: str):
         rebuilt = _try_rebuild_thumb(safe)
         if not rebuilt or not path.exists():
             return Response(content=_placeholder_jpeg(), media_type='image/jpeg', headers={'X-Placeholder': '1'})
+    return FileResponse(str(path), media_type='image/jpeg')
+
+
+@router.get('/registered/{name}')
+def get_registered_image(name: str):
+    safe = _safe_name(name)
+    path = store.paths.registered / safe
+    if not path.exists():
+        return Response(content=_placeholder_jpeg('NO IMAGE'), media_type='image/jpeg', headers={'X-Placeholder': '1'})
     return FileResponse(str(path), media_type='image/jpeg')
 
 

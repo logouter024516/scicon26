@@ -23,6 +23,8 @@ class ClipItem(BaseModel):
 class CaptureStateResponse(BaseModel):
     running: bool
     cameraIndex: int
+    cameraId: str = ''
+    cameraSource: str = ''
 
 
 class SearchResultItem(BaseModel):
@@ -52,3 +54,5 @@ class PipelineFindResponse(BaseModel):
 
 class RegisteredItem(BaseModel):
     name: str
+    thumbFile: str = ''
+    createdAt: str = ''

@@ -1,10 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { apiClient } from '../../api/client';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import type { QuickResultDto } from '../../types/domain';
+
+const QUICK_CAMERA_FILTER_STORAGE_KEY = 'mf.quick.cameraFilter';
+const QUICK_SORT_MODE_STORAGE_KEY = 'mf.quick.sortMode';
+const QUICK_GROUP_MODE_STORAGE_KEY = 'mf.quick.groupMode';
+const QUICK_RESULT_FILTER_STORAGE_KEY = 'mf.quick.resultFilterText';
 
 function cameraIndexFromId(cameraId?: string): string {
   if (!cameraId) return '-';
@@ -28,6 +33,7 @@ function formatKoreanDateTime(value?: string): string {
 }
 
 type SortMode = 'score' | 'time';
+type GroupMode = 'none' | 'camera' | 'date';
 
 function confidenceMeta(score: number): { label: string; tone: 'high' | 'medium' | 'low' } {
   if (score >= 0.8) return { label: 'High', tone: 'high' };
@@ -38,15 +44,62 @@ function confidenceMeta(score: number): { label: string; tone: 'high' | 'medium'
 export function QuickPage() {
   const [query, setQuery] = useState('');
   const [items, setItems] = useState<QuickResultDto[]>([]);
+  const [registeredItems, setRegisteredItems] = useState<string[]>([]);
   const [visibleCount, setVisibleCount] = useState(6);
-  const [expandedClip, setExpandedClip] = useState<string | null>(null);
-  const [cameraFilter, setCameraFilter] = useState('all');
-  const [sortMode, setSortMode] = useState<SortMode>('score');
+  const [cameraFilter, setCameraFilter] = useState(() => {
+    try {
+      return window.localStorage.getItem(QUICK_CAMERA_FILTER_STORAGE_KEY) ?? 'all';
+    } catch {
+      return 'all';
+    }
+  });
+  const [resultFilterText, setResultFilterText] = useState(() => {
+    try {
+      return window.localStorage.getItem(QUICK_RESULT_FILTER_STORAGE_KEY) ?? '';
+    } catch {
+      return '';
+    }
+  });
+  const [sortMode, setSortMode] = useState<SortMode>(() => {
+    try {
+      const v = window.localStorage.getItem(QUICK_SORT_MODE_STORAGE_KEY);
+      return v === 'time' ? 'time' : 'score';
+    } catch {
+      return 'score';
+    }
+  });
+  const [groupMode, setGroupMode] = useState<GroupMode>(() => {
+    try {
+      const v = window.localStorage.getItem(QUICK_GROUP_MODE_STORAGE_KEY);
+      if (v === 'camera' || v === 'date' || v === 'none') return v;
+      return 'none';
+    } catch {
+      return 'none';
+    }
+  });
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [presetClipId, setPresetClipId] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+    useEffect(() => {
+      let mounted = true;
+      async function loadRegistered() {
+        try {
+          const items = await apiClient.listRegistered();
+          if (!mounted) return;
+          setRegisteredItems(items.map((x) => x.name));
+        } catch {
+          if (!mounted) return;
+          setRegisteredItems([]);
+        }
+      }
+      loadRegistered();
+      return () => {
+        mounted = false;
+      };
+    }, []);
+
   const rowRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const executeSearch = useCallback(async (searchQuery: string, notify = true) => {
@@ -56,7 +109,6 @@ export function QuickPage() {
       const res = await apiClient.quickSearch(searchQuery);
       setItems(res);
       setVisibleCount(6);
-      setExpandedClip(null);
       setSelectedIndex(0);
       if (notify) {
         window.dispatchEvent(
@@ -77,6 +129,42 @@ export function QuickPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(QUICK_CAMERA_FILTER_STORAGE_KEY, cameraFilter);
+    } catch {
+      // ignore storage errors
+    }
+  }, [cameraFilter]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(QUICK_SORT_MODE_STORAGE_KEY, sortMode);
+    } catch {
+      // ignore storage errors
+    }
+  }, [sortMode]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(QUICK_GROUP_MODE_STORAGE_KEY, groupMode);
+    } catch {
+      // ignore storage errors
+    }
+  }, [groupMode]);
+
+  useEffect(() => {
+    try {
+      if (resultFilterText) {
+        window.localStorage.setItem(QUICK_RESULT_FILTER_STORAGE_KEY, resultFilterText);
+      } else {
+        window.localStorage.removeItem(QUICK_RESULT_FILTER_STORAGE_KEY);
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }, [resultFilterText]);
 
   useEffect(() => {
     function onQuickPreset(e: Event) {
@@ -105,6 +193,12 @@ export function QuickPage() {
   }
 
   const filteredSortedItems = items
+    .filter((x) => {
+      const q = resultFilterText.trim().toLowerCase();
+      if (!q) return true;
+      const haystack = `${x.clipId} ${x.detail} ${x.cameraId ?? ''} ${x.eventAt ?? ''}`.toLowerCase();
+      return haystack.includes(q);
+    })
     .filter((x) => cameraFilter === 'all' || cameraIndexFromId(x.cameraId) === cameraFilter)
     .sort((a, b) => {
       if (sortMode === 'time') {
@@ -117,46 +211,110 @@ export function QuickPage() {
       return b.score - a.score;
     });
 
+  const matchedRegistered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return registeredItems.slice(0, 8);
+    return registeredItems
+      .filter((name) => name.toLowerCase().includes(q))
+      .slice(0, 8);
+  }, [query, registeredItems]);
+
+  const exactRegistered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return null;
+    return registeredItems.find((name) => name.toLowerCase() === q) ?? null;
+  }, [query, registeredItems]);
+
   const cameraOptions = Array.from(new Set(items.map((x) => cameraIndexFromId(x.cameraId)).filter((x) => x !== '-')));
   const visibleItems = filteredSortedItems.slice(0, visibleCount);
 
   useEffect(() => {
-    const refs = videoRefs.current;
-    Object.entries(refs).forEach(([clipId, el]) => {
-      if (!el) return;
-      if (expandedClip !== clipId) {
-        el.pause();
-        el.currentTime = 0;
-      }
-    });
-
-    if (expandedClip && refs[expandedClip]) {
-      void refs[expandedClip]?.play().catch(() => undefined);
+    if (cameraFilter === 'all') return;
+    if (!cameraOptions.includes(cameraFilter)) {
+      setCameraFilter('all');
     }
-  }, [expandedClip]);
+  }, [cameraFilter, cameraOptions]);
+
+  const groupedVisibleItems = useMemo(() => {
+    const keyToItems = new Map<string, QuickResultDto[]>();
+    const keyToLabel = new Map<string, string>();
+
+    function groupKey(item: QuickResultDto): { key: string; label: string } {
+      if (groupMode === 'camera') {
+        const cam = cameraIndexFromId(item.cameraId);
+        return { key: `cam:${cam}`, label: cam === '-' ? 'Camera: Unknown' : `Camera ${cam}` };
+      }
+      if (groupMode === 'date') {
+        const d = new Date(item.eventAt ?? '');
+        if (Number.isNaN(d.getTime())) return { key: 'date:unknown', label: 'Date: Unknown' };
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return { key: `date:${y}-${m}-${day}`, label: `${y}-${m}-${day}` };
+      }
+      return { key: 'all', label: 'All Results' };
+    }
+
+    for (const item of visibleItems) {
+      const g = groupKey(item);
+      if (!keyToItems.has(g.key)) {
+        keyToItems.set(g.key, []);
+        keyToLabel.set(g.key, g.label);
+      }
+      keyToItems.get(g.key)?.push(item);
+    }
+
+    return Array.from(keyToItems.entries()).map(([key, groupItems]) => ({
+      key,
+      label: keyToLabel.get(key) ?? key,
+      items: groupItems,
+    }));
+  }, [groupMode, visibleItems]);
+
+  const navigableItems = useMemo(() => {
+    if (groupMode === 'none') return visibleItems;
+    const out: QuickResultDto[] = [];
+    for (const group of groupedVisibleItems) {
+      if (collapsedGroups[group.key]) continue;
+      out.push(...group.items);
+    }
+    return out;
+  }, [collapsedGroups, groupMode, groupedVisibleItems, visibleItems]);
+
+  const visibleIndexByClipId = useMemo(() => {
+    const map = new Map<string, number>();
+    navigableItems.forEach((item, idx) => {
+      map.set(item.clipId, idx);
+    });
+    return map;
+  }, [navigableItems]);
 
   useEffect(() => {
-    if (visibleItems.length === 0) {
+    setCollapsedGroups({});
+  }, [groupMode]);
+
+  useEffect(() => {
+    if (navigableItems.length === 0) {
       setSelectedIndex(0);
       return;
     }
-    if (selectedIndex > visibleItems.length - 1) {
-      setSelectedIndex(visibleItems.length - 1);
+    if (selectedIndex > navigableItems.length - 1) {
+      setSelectedIndex(navigableItems.length - 1);
     }
-  }, [selectedIndex, visibleItems.length]);
+  }, [selectedIndex, navigableItems.length]);
 
   useEffect(() => {
-    const target = visibleItems[selectedIndex];
+    const target = navigableItems[selectedIndex];
     if (!target) return;
     const el = rowRefs.current[target.clipId];
     el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }, [selectedIndex, visibleItems]);
+  }, [selectedIndex, navigableItems]);
 
   function onResultsKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
-    if (visibleItems.length === 0) return;
+    if (navigableItems.length === 0) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex((v) => Math.min(v + 1, visibleItems.length - 1));
+      setSelectedIndex((v) => Math.min(v + 1, navigableItems.length - 1));
       return;
     }
     if (e.key === 'ArrowUp') {
@@ -166,20 +324,9 @@ export function QuickPage() {
     }
     if (e.key === 'Enter') {
       e.preventDefault();
-      const selected = visibleItems[selectedIndex];
-      if (!selected?.clipFile) return;
-      setExpandedClip((prev) => (prev === selected.clipId ? null : selected.clipId));
+      return;
     }
   }
-
-  useEffect(() => {
-    return () => {
-      Object.values(videoRefs.current).forEach((el) => {
-        if (!el) return;
-        el.pause();
-      });
-    };
-  }, []);
 
   return (
     <section className="page-shell">
@@ -198,9 +345,35 @@ export function QuickPage() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="e.g. key"
             />
+            {exactRegistered && (
+              <p style={{ marginTop: 6, opacity: 0.8 }}>
+                Registered match: <strong>{exactRegistered}</strong>
+              </p>
+            )}
+            {matchedRegistered.length > 0 && (
+              <div style={{ marginTop: 8 }}>
+                <p style={{ marginBottom: 6, opacity: 0.8 }}>Registered items</p>
+                <div className="file-chip-list">
+                  {matchedRegistered.map((name) => (
+                    <button
+                      key={name}
+                      type="button"
+                      className="file-chip"
+                      onClick={() => setQuery(name)}
+                    >
+                      <span>{name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          <Button className="w-full btn-intent-search" onClick={onSearch} disabled={loading || !query.trim()}>
+          <Button
+            className="w-full btn-intent-search"
+            onClick={onSearch}
+            disabled={loading || !query.trim()}
+          >
             {loading ? 'Searching...' : 'Run Quick Search'}
           </Button>
 
@@ -224,6 +397,16 @@ export function QuickPage() {
           )}
 
           <div className="filter-grid">
+            <div className="field-row" style={{ marginBottom: 0 }}>
+              <Label htmlFor="quick-result-filter">Result text filter</Label>
+              <Input
+                id="quick-result-filter"
+                value={resultFilterText}
+                onChange={(e) => setResultFilterText(e.target.value)}
+                placeholder="clip id / detail / camera"
+              />
+            </div>
+
             <div className="field-row" style={{ marginBottom: 0 }}>
               <Label htmlFor="quick-camera-filter">Camera filter</Label>
               <select
@@ -253,6 +436,20 @@ export function QuickPage() {
                 <option value="time">By latest time</option>
               </select>
             </div>
+
+            <div className="field-row" style={{ marginBottom: 0 }}>
+              <Label htmlFor="quick-group-mode">Group</Label>
+              <select
+                id="quick-group-mode"
+                className="ui-select"
+                value={groupMode}
+                onChange={(e) => setGroupMode((e.target.value as GroupMode) || 'none')}
+              >
+                <option value="none">No grouping</option>
+                <option value="camera">By camera</option>
+                <option value="date">By date</option>
+              </select>
+            </div>
           </div>
 
           {error && <p className="error">{error}</p>}
@@ -260,62 +457,57 @@ export function QuickPage() {
 
         <div className="feature-card panel">
           <h3 className="panel-title">Ranked Results</h3>
-          <p className="muted">Keyboard: ↑/↓ to move, Enter to play/hide.</p>
+          <p className="muted">Keyboard: ↑/↓ move (visible list).</p>
+          <p className="muted">Showing {filteredSortedItems.length} / {items.length}</p>
           <div className="result-list list-scroll" tabIndex={0} onKeyDown={onResultsKeyDown}>
             {filteredSortedItems.length === 0 ? (
               <p className="empty-state">No results yet.</p>
             ) : (
-              visibleItems.map((x, i) => {
-                const isExpanded = expandedClip === x.clipId;
-                const conf = confidenceMeta(x.score);
-                return (
-                  <div
-                    ref={(el) => {
-                      rowRefs.current[x.clipId] = el;
-                    }}
-                    className={`result-box ${i === selectedIndex ? 'result-box--active' : ''}`}
-                    key={`${x.clipId}-${x.score}`}
-                  >
-                    <div className="result-head">
-                      <p><strong>#{i + 1}</strong> · {x.clipId}</p>
-                      <span className={`score-badge score-badge--${conf.tone}`}>{conf.label}</span>
+              groupedVisibleItems.map((group) => (
+                <div className="quick-group" key={group.key}>
+                  {groupMode !== 'none' && (
+                    <div className="quick-group-head">
+                      <p className="quick-group-title">{group.label} ({group.items.length})</p>
+                      <button
+                        type="button"
+                        className="quick-group-toggle"
+                        onClick={() => setCollapsedGroups((prev) => ({
+                          ...prev,
+                          [group.key]: !prev[group.key],
+                        }))}
+                      >
+                        {collapsedGroups[group.key] ? 'Expand' : 'Collapse'}
+                      </button>
                     </div>
-                    <p><strong>Score</strong>: {x.score.toFixed(3)}</p>
-                    <p><strong>Detail</strong>: {x.detail}</p>
-                    <p><strong>Camera index</strong>: {cameraIndexFromId(x.cameraId)}</p>
-                    <p><strong>Captured at</strong>: {formatKoreanDateTime(x.eventAt)}</p>
-
-                    {x.thumbFile && !isExpanded && (
-                      <img className="result-thumb" src={apiClient.thumbUrl(x.thumbFile)} alt="clip-thumb" loading="lazy" />
-                    )}
-
-                    {x.clipFile && (
-                      <div className="preview-actions">
-                        <Button
-                          className="btn-intent-preview"
-                          variant="outline"
-                          onClick={() => setExpandedClip((prev) => (prev === x.clipId ? null : x.clipId))}
-                        >
-                          {isExpanded ? 'Hide Clip' : 'Play Clip'}
-                        </Button>
-                      </div>
-                    )}
-
-                    {x.clipFile && isExpanded && (
-                      <video
+                  )}
+                  {!collapsedGroups[group.key] && group.items.map((x) => {
+                    const i = visibleIndexByClipId.get(x.clipId) ?? 0;
+                    const conf = confidenceMeta(x.score);
+                    return (
+                      <div
                         ref={(el) => {
-                          videoRefs.current[x.clipId] = el;
+                          rowRefs.current[x.clipId] = el;
                         }}
-                        className="result-video"
-                        src={apiClient.clipUrl(x.clipFile)}
-                        poster={x.thumbFile ? apiClient.thumbUrl(x.thumbFile) : undefined}
-                        controls
-                        preload="metadata"
-                      />
-                    )}
-                  </div>
-                );
-              })
+                        className={`result-box ${i === selectedIndex ? 'result-box--active' : ''}`}
+                        key={`${x.clipId}-${x.score}`}
+                      >
+                        <div className="result-head">
+                          <p><strong>#{i + 1}</strong> · {x.clipId}</p>
+                          <span className={`score-badge score-badge--${conf.tone}`}>{conf.label}</span>
+                        </div>
+                        <p><strong>Score</strong>: {x.score.toFixed(3)}</p>
+                        <p><strong>Detail</strong>: {x.detail}</p>
+                        <p><strong>Camera index</strong>: {cameraIndexFromId(x.cameraId)}</p>
+                        <p><strong>Captured at</strong>: {formatKoreanDateTime(x.eventAt)}</p>
+
+                        {x.thumbFile && (
+                          <img className="result-thumb" src={apiClient.thumbUrl(x.thumbFile)} alt="clip-thumb" loading="lazy" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))
             )}
 
             {filteredSortedItems.length > visibleCount && (

@@ -10,6 +10,8 @@ router = APIRouter()
 class PipelineFindRequest(BaseModel):
     query: str
     cameraIndex: int = 0
+    cameraId: str | None = None
+    cameraSource: str | None = None
     topK: int = 5
 
 
@@ -26,7 +28,12 @@ def find_item(req: PipelineFindRequest) -> PipelineFindResponse:
         )
 
     try:
-        live_result = store.search.live_search(query, camera_index=req.cameraIndex)
+        live_result = store.search.live_search(
+            query,
+            camera_index=req.cameraIndex,
+            camera_id=req.cameraId,
+            camera_source=req.cameraSource,
+        )
         live = LiveSearchResponse(found=live_result.found, score=live_result.score, detail=live_result.detail)
         live_found = bool(live_result.found)
     except Exception as e:

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from app.config import Paths, ensure_dirs
+from app.settings import AppSettings, load_settings
 from app.services.capture_service import CaptureService
 from app.services.search_service import SearchService
 from app.utils import read_json
@@ -9,6 +10,7 @@ from app.utils import read_json
 @dataclass(slots=True)
 class AppStore:
     paths: Paths
+    settings: AppSettings
     capture: CaptureService
     search: SearchService
 
@@ -23,9 +25,11 @@ class AppStore:
 
 _paths = Paths()
 ensure_dirs(_paths)
+_settings = load_settings()
 
 store = AppStore(
     paths=_paths,
-    capture=CaptureService(_paths),
-    search=SearchService(_paths),
+    settings=_settings,
+    capture=CaptureService(_paths, _settings),
+    search=SearchService(_paths, _settings),
 )
