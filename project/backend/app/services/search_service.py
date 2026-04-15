@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 import re
@@ -126,6 +127,149 @@ class SearchService:
         if s.isdigit() or (s.startswith('-') and s[1:].isdigit()):
             return cv2.VideoCapture(int(s))
         return cv2.VideoCapture(s)
+
+    def _resolve_index_media_path(self, raw_path: str, media_dir: Path) -> tuple[Path, bool]:
+        p = Path(str(raw_path or ''))
+        if p.exists():
+            return p, False
+
+        name = p.name
+        if not name:
+            return p, False
+
+        fallback = media_dir / name
+        if fallback.exists():
+            return fallback, True
+        return p, False
+
+    def _first_non_empty(self, rec: dict[str, Any], keys: list[str]) -> str:
+        for k in keys:
+            v = rec.get(k)
+            if v is None:
+                continue
+            s = str(v).strip()
+            if s:
+                return s
+        return ''
+
+    def _iso_from_file_time(self, p: Path) -> str:
+        try:
+            ts = p.stat().st_mtime
+            return datetime.fromtimestamp(ts).isoformat(timespec='seconds')
+        except Exception:
+            return ''
+
+    def _guess_thumb_path(self, clip_path: Path, clip_id: str) -> Path:
+        candidates = [
+            self.paths.thumbs / f'{clip_id}.jpg',
+            self.paths.thumbs / f'{clip_id}.jpeg',
+            self.paths.thumbs / f'{clip_id}.png',
+            clip_path.with_suffix('.jpg'),
+            clip_path.with_suffix('.jpeg'),
+            clip_path.with_suffix('.png'),
+        ]
+        for c in candidates:
+            if c.exists():
+                return c
+        return self.paths.thumbs / f'{clip_id}.jpg'
+
+    def _normalize_clip_record(self, rec: Any) -> tuple[dict[str, str] | None, bool]:
+        if not isinstance(rec, dict):
+            return None, False
+
+        changed = False
+        clip_raw = self._first_non_empty(rec, ['clip_path', 'clipPath', 'clip_file', 'clipFile'])
+        clip_id_raw = self._first_non_empty(rec, ['clip_id', 'clipId'])
+
+        if not clip_raw and clip_id_raw:
+            clip_raw = f'{clip_id_raw}.mp4'
+            changed = True
+
+        clip_path, migrated = self._resolve_index_media_path(clip_raw, self.paths.clips)
+        changed = changed or migrated
+        if not clip_path.exists():
+            return None, changed
+
+        clip_id = clip_id_raw.strip() or clip_path.stem
+        if clip_id != clip_id_raw:
+            changed = True
+
+        thumb_raw = self._first_non_empty(
+            rec,
+            ['thumbnail_path', 'thumbnailPath', 'thumb_path', 'thumbPath', 'thumbnail_file', 'thumbFile'],
+        )
+        if not thumb_raw:
+            thumb_path = self._guess_thumb_path(clip_path, clip_id)
+            changed = True
+        else:
+            thumb_path, thumb_migrated = self._resolve_index_media_path(thumb_raw, self.paths.thumbs)
+            changed = changed or thumb_migrated
+            if not thumb_path.exists():
+                thumb_path = self._guess_thumb_path(clip_path, clip_id)
+                changed = True
+
+        event_at = self._first_non_empty(rec, ['event_at', 'eventAt', 'timestamp'])
+        if not event_at:
+            event_at = self._iso_from_file_time(clip_path)
+            changed = True
+
+        camera_id = self._first_non_empty(rec, ['camera_id', 'cameraId', 'camera']) or 'ambient_cam_0'
+        if camera_id == 'ambient_cam_0' and self._first_non_empty(rec, ['camera_id', 'cameraId', 'camera']) != camera_id:
+            changed = True
+
+        normalized = {
+            'clip_id': clip_id,
+            'event_at': event_at,
+            'camera_id': camera_id,
+            'clip_path': str(clip_path.as_posix()),
+            'thumbnail_path': str(thumb_path.as_posix()),
+        }
+        return normalized, changed
+
+    def _load_quick_index_records(self) -> list[dict[str, str]]:
+        data = read_json(self.paths.index_file, {'clips': []})
+        clips_raw = data.get('clips') if isinstance(data, dict) else []
+        if not isinstance(clips_raw, list):
+            clips_raw = []
+
+        normalized: list[dict[str, str]] = []
+        seen_clip_ids: set[str] = set()
+        index_updated = False
+
+        for rec in clips_raw:
+            norm, changed = self._normalize_clip_record(rec)
+            index_updated = index_updated or changed
+            if norm is None:
+                continue
+            if norm['clip_id'] in seen_clip_ids:
+                index_updated = True
+                continue
+            seen_clip_ids.add(norm['clip_id'])
+            normalized.append(norm)
+
+        for p in sorted(self.paths.clips.glob('*')):
+            if not p.is_file() or p.suffix.lower() not in {'.mp4', '.avi', '.mov', '.mkv', '.webm'}:
+                continue
+            clip_id = p.stem
+            if clip_id in seen_clip_ids:
+                continue
+            thumb_path = self._guess_thumb_path(p, clip_id)
+            normalized.append(
+                {
+                    'clip_id': clip_id,
+                    'event_at': self._iso_from_file_time(p),
+                    'camera_id': 'ambient_cam_0',
+                    'clip_path': str(p.as_posix()),
+                    'thumbnail_path': str(thumb_path.as_posix()),
+                }
+            )
+            seen_clip_ids.add(clip_id)
+            index_updated = True
+
+        if index_updated:
+            write_json(self.paths.index_file, {'clips': normalized})
+
+        return normalized
 
     def _ensure_yolo(self) -> bool:
         if self._yolo_ready:
@@ -367,10 +511,7 @@ class SearchService:
         return LiveResult(found=found, score=score, detail=f'zero-shot heuristic for "{q}"', bbox_norm=bbox if found else None)
 
     def quick_search(self, query: str, top_k: int = 5) -> list[dict]:
-        data = read_json(self.paths.index_file, {'clips': []})
-        clips = data.get('clips') if isinstance(data, dict) else []
-        if not isinstance(clips, list):
-            clips = []
+        clips = self._load_quick_index_records()
 
         reg = self._load_registry()
         use_reg = query.strip() in reg
@@ -379,7 +520,8 @@ class SearchService:
 
         out: list[dict] = []
         for rec in clips:
-            clip_path = Path(str(rec.get('clip_path', '')))
+            clip_path_raw = str(rec.get('clip_path', ''))
+            clip_path, _ = self._resolve_index_media_path(clip_path_raw, self.paths.clips)
             if not clip_path.exists():
                 continue
 
@@ -408,6 +550,11 @@ class SearchService:
                 idx += 1
             cap.release()
 
+            thumb_raw = str(rec.get('thumbnail_path', ''))
+            thumb_path, _ = self._resolve_index_media_path(thumb_raw, self.paths.thumbs)
+            if not thumb_path.exists():
+                thumb_path = self._guess_thumb_path(clip_path, str(rec.get('clip_id', '')))
+
             out.append(
                 {
                     'clipId': str(rec.get('clip_id', '')),
@@ -416,7 +563,7 @@ class SearchService:
                     'eventAt': str(rec.get('event_at', '')),
                     'cameraId': str(rec.get('camera_id', 'ambient_cam_0')),
                     'clipFile': clip_path.name,
-                    'thumbFile': Path(str(rec.get('thumbnail_path', ''))).name,
+                    'thumbFile': thumb_path.name,
                 }
             )
 

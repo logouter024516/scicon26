@@ -19,6 +19,21 @@ def _safe_name(name: str) -> str:
     return name
 
 
+def _resolve_index_media_path(raw_path: str, media_dir: Path) -> tuple[Path, bool]:
+    p = Path(str(raw_path or ''))
+    if p.exists():
+        return p, False
+
+    name = p.name
+    if not name:
+        return p, False
+
+    fallback = media_dir / name
+    if fallback.exists():
+        return fallback, True
+    return p, False
+
+
 def _try_rebuild_thumb(name: str) -> bool:
     data = read_json(store.paths.index_file, {'clips': []})
     clips = data.get('clips') if isinstance(data, dict) else []
@@ -35,8 +50,15 @@ def _try_rebuild_thumb(name: str) -> bool:
     if target is None:
         return False
 
-    clip_path = Path(str(target.get('clip_path', '')))
-    thumb_path = Path(str(target.get('thumbnail_path', '')))
+    clip_path, clip_migrated = _resolve_index_media_path(str(target.get('clip_path', '')), store.paths.clips)
+    thumb_path, thumb_migrated = _resolve_index_media_path(str(target.get('thumbnail_path', '')), store.paths.thumbs)
+    if clip_migrated:
+        target['clip_path'] = str(clip_path.as_posix())
+    if thumb_migrated:
+        target['thumbnail_path'] = str(thumb_path.as_posix())
+    if (clip_migrated or thumb_migrated) and isinstance(data, dict):
+        write_json(store.paths.index_file, data)
+
     if not clip_path.exists():
         return False
 
@@ -158,8 +180,12 @@ def delete_clip_by_id(clip_id: str):
     if target is None:
         raise HTTPException(status_code=404, detail='clip not found')
 
-    clip_path = Path(str(target.get('clip_path', '')))
-    thumb_path = Path(str(target.get('thumbnail_path', '')))
+    clip_path, clip_migrated = _resolve_index_media_path(str(target.get('clip_path', '')), store.paths.clips)
+    thumb_path, thumb_migrated = _resolve_index_media_path(str(target.get('thumbnail_path', '')), store.paths.thumbs)
+    if clip_migrated:
+        target['clip_path'] = str(clip_path.as_posix())
+    if thumb_migrated:
+        target['thumbnail_path'] = str(thumb_path.as_posix())
 
     for p in (clip_path, thumb_path):
         try:
