@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 import re
+import time
 
 import cv2
 import numpy as np
@@ -115,6 +116,10 @@ class SearchService:
         self._clip_ready = False
         self._clip_backend = 'none'
         self._device = 'cuda' if (torch is not None and torch.cuda.is_available()) else 'cpu'
+        self._last_yolo_at = 0.0
+        self._last_yolo_query = ''
+        self._last_yolo_score = 0.0
+        self._last_yolo_bbox: tuple[float, float, float, float] | None = None
 
     def _safe_camera_id(self, camera_id: str) -> str:
         return re.sub(r'[^a-zA-Z0-9_-]+', '_', camera_id).strip('_') or 'ambient_cam_0'
@@ -280,6 +285,10 @@ class SearchService:
         return score
 
     def _ensure_yolo(self) -> bool:
+        if not bool(self.settings.live_search.enabled):
+            self._yolo_ready = True
+            self._yolo_model = None
+            return False
         if self._yolo_ready:
             return self._yolo_model is not None
         self._yolo_ready = True
@@ -299,6 +308,12 @@ class SearchService:
             return False
 
     def _ensure_clip(self) -> bool:
+        if not bool(self.settings.quick_search.use_clip):
+            self._clip_ready = True
+            self._clip_model = None
+            self._clip_processor = None
+            self._clip_backend = 'none'
+            return False
         if self._clip_ready:
             return self._clip_model is not None and self._clip_processor is not None
         self._clip_ready = True
@@ -329,13 +344,36 @@ class SearchService:
         if not self._ensure_yolo() or self._yolo_model is None:
             return 0.0, None
         try:
+            q = query.strip().lower()
+            now = time.time()
+            interval = max(0.0, float(self.settings.live_search.infer_interval_sec))
+            if interval > 0.0 and q == self._last_yolo_query and (now - self._last_yolo_at) < interval:
+                return self._last_yolo_score, self._last_yolo_bbox
+
+            max_side = max(128, int(self.settings.live_search.input_max_side))
+            h0, w0 = img_bgr.shape[:2]
+            frame = img_bgr
+            if max(h0, w0) > max_side:
+                scale = float(max_side) / float(max(h0, w0))
+                nw = max(64, int(round(w0 * scale)))
+                nh = max(64, int(round(h0 * scale)))
+                frame = cv2.resize(img_bgr, (nw, nh), interpolation=cv2.INTER_AREA)
+
             self._yolo_model.set_classes([query])
-            results = self._yolo_model.predict(img_bgr, verbose=False)
+            results = self._yolo_model.predict(frame, imgsz=max_side, verbose=False)
             if not results:
+                self._last_yolo_at = now
+                self._last_yolo_query = q
+                self._last_yolo_score = 0.0
+                self._last_yolo_bbox = None
                 return 0.0, None
             r = results[0]
             boxes = getattr(r, 'boxes', None)
             if boxes is None or len(boxes) == 0:
+                self._last_yolo_at = now
+                self._last_yolo_query = q
+                self._last_yolo_score = 0.0
+                self._last_yolo_bbox = None
                 return 0.0, None
 
             confs = boxes.conf.detach().cpu().numpy()
@@ -343,10 +381,18 @@ class SearchService:
             i = int(np.argmax(confs))
             conf = float(confs[i])
             if conf < float(self.settings.live_search.confidence):
+                self._last_yolo_at = now
+                self._last_yolo_query = q
+                self._last_yolo_score = 0.0
+                self._last_yolo_bbox = None
                 return 0.0, None
             x1, y1, x2, y2 = xyxy[i].tolist()
-            h, w = img_bgr.shape[:2]
+            h, w = frame.shape[:2]
             if w <= 0 or h <= 0:
+                self._last_yolo_at = now
+                self._last_yolo_query = q
+                self._last_yolo_score = conf
+                self._last_yolo_bbox = None
                 return conf, None
             bbox = (
                 max(0.0, min(1.0, x1 / w)),
@@ -354,6 +400,10 @@ class SearchService:
                 max(0.0, min(1.0, (x2 - x1) / w)),
                 max(0.0, min(1.0, (y2 - y1) / h)),
             )
+            self._last_yolo_at = now
+            self._last_yolo_query = q
+            self._last_yolo_score = conf
+            self._last_yolo_bbox = bbox
             return conf, bbox
         except Exception:
             return 0.0, None
@@ -545,9 +595,10 @@ class SearchService:
         reg = self._load_registry()
         use_reg = query.strip() in reg
         target = np.array(reg[query.strip()], dtype=np.float32) if use_reg else None
-        clip_text_emb = None if use_reg else self._clip_text_emb(query.strip())
-        max_samples_per_clip = max(8, int(self.settings.quick_search.batch_size))
+        clip_text_emb = None if (use_reg or not bool(self.settings.quick_search.use_clip)) else self._clip_text_emb(query.strip())
+        max_samples_per_clip = max(1, int(self.settings.quick_search.batch_size))
         early_accept_score = 0.86
+        thumbnail_only = bool(self.settings.quick_search.thumbnail_only)
 
         prepared: list[dict[str, Any]] = []
         for rec in clips:
@@ -586,9 +637,12 @@ class SearchService:
                     if score > best_scores[owner_idx]:
                         best_scores[owner_idx] = float(score)
 
-            refine_count = max(top_k * 4, 12)
+            refine_count = max(top_k * 2, 4)
             order = sorted(range(len(prepared)), key=lambda i: best_scores[i], reverse=True)
             scan_indices = set(order[: min(len(order), refine_count)])
+
+            if thumbnail_only:
+                scan_indices = set()
 
         out: list[dict] = []
         for i, p in enumerate(prepared):

@@ -26,13 +26,18 @@ class CaptureSettings:
 
 @dataclass(slots=True)
 class LiveSearchSettings:
+    enabled: bool = True
     model: str = 'yolov8s-worldv2.pt'
     confidence: float = 0.35
     device: str = 'auto'
+    infer_interval_sec: float = 1.2
+    input_max_side: int = 256
 
 
 @dataclass(slots=True)
 class QuickSearchSettings:
+    use_clip: bool = True
+    thumbnail_only: bool = False
     sample_fps: int = 1
     batch_size: int = 64
     top_k: int = 5
@@ -59,6 +64,19 @@ def _to_float(v: Any, default: float) -> float:
         return float(v)
     except Exception:
         return default
+
+
+def _to_bool(v: Any, default: bool) -> bool:
+    if isinstance(v, bool):
+        return v
+    if v is None:
+        return default
+    s = str(v).strip().lower()
+    if s in {'1', 'true', 't', 'yes', 'y', 'on'}:
+        return True
+    if s in {'0', 'false', 'f', 'no', 'n', 'off'}:
+        return False
+    return default
 
 
 def load_settings() -> AppSettings:
@@ -99,11 +117,16 @@ def load_settings() -> AppSettings:
             stillness_sec=max(0.5, _to_float(cap.get('stillness_sec', 3.0), 3.0)),
         ),
         live_search=LiveSearchSettings(
+            enabled=_to_bool(live.get('enabled', True), True),
             model=str(live.get('model', 'yolov8s-worldv2.pt')),
             confidence=max(0.05, min(0.95, _to_float(live.get('confidence', 0.35), 0.35))),
             device=str(live.get('device', 'auto')),
+            infer_interval_sec=max(0.0, _to_float(live.get('infer_interval_sec', 1.2), 1.2)),
+            input_max_side=max(128, _to_int(live.get('input_max_side', 256), 256)),
         ),
         quick_search=QuickSearchSettings(
+            use_clip=_to_bool(quick.get('use_clip', True), True),
+            thumbnail_only=_to_bool(quick.get('thumbnail_only', False), False),
             sample_fps=max(1, _to_int(quick.get('sample_fps', 1), 1)),
             batch_size=max(1, _to_int(quick.get('batch_size', 64), 64)),
             top_k=max(1, _to_int(quick.get('top_k', 5), 5)),

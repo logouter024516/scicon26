@@ -10,12 +10,17 @@ capture:
   stillness_sec: 2.0
 
 live_search:
+  enabled: true
   model: "yolov8s-worldv2.pt"
-  confidence: 0.35
+  confidence: 0.40
   device: "auto"
+  infer_interval_sec: 1.2
+  input_max_side: 256
 
 quick_search:
+  use_clip: true
+  thumbnail_only: true
   sample_fps: 1
-  batch_size: 12
+  batch_size: 2
   top_k: 3
   clip_model: "ViT-B/32"
