@@ -1,13 +1,13 @@
 camera:
   source: "0"
-  fps: 30
-  resolution: [1280, 720]
+  fps: 10
+  resolution: [640, 360]
 
 capture:
-  pre_buffer_sec: 5
-  post_buffer_sec: 10
+  pre_buffer_sec: 3
+  post_buffer_sec: 4
   motion_threshold: 1200
-  stillness_sec: 3.0
+  stillness_sec: 2.0
 
 live_search:
   model: "yolov8s-worldv2.pt"
@@ -16,6 +16,6 @@ live_search:
 
 quick_search:
   sample_fps: 1
-  batch_size: 64
-  top_k: 5
+  batch_size: 12
+  top_k: 3
   clip_model: "ViT-B/32"

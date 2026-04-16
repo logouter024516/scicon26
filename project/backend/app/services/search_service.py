@@ -271,6 +271,14 @@ class SearchService:
 
         return normalized
 
+    def _score_single_image(self, img_bgr: np.ndarray, query: str, use_reg: bool, target: np.ndarray | None, clip_text_emb: Any) -> float:
+        if use_reg and target is not None:
+            return _hist_score(_calc_hist(img_bgr), target)
+        if clip_text_emb is not None:
+            return self._clip_image_score(img_bgr, clip_text_emb)
+        score, _ = _query_color_score(img_bgr, query)
+        return score
+
     def _ensure_yolo(self) -> bool:
         if self._yolo_ready:
             return self._yolo_model is not None
@@ -389,6 +397,27 @@ class SearchService:
             img_emb = img_emb / img_emb.norm(dim=-1, keepdim=True)
             sim = float(torch.matmul(img_emb, text_emb.T).squeeze().item())
             return max(0.0, min(1.0, (sim + 1.0) * 0.5))
+
+    def _clip_image_scores_batch(self, images_bgr: list[np.ndarray], text_emb: Any) -> list[float]:
+        if not images_bgr or self._clip_model is None or self._clip_processor is None or torch is None:
+            return [0.0 for _ in images_bgr]
+
+        if self._clip_backend == 'openai-clip':
+            pil_images = [Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)) for img in images_bgr]
+            with torch.no_grad():
+                x = torch.stack([self._clip_processor(pil) for pil in pil_images]).to(self._device)
+                img_emb = self._clip_model.encode_image(x)
+                img_emb = img_emb / img_emb.norm(dim=-1, keepdim=True)
+                sims = torch.matmul(img_emb, text_emb.T).squeeze(-1).detach().cpu().numpy().reshape(-1)
+            return [max(0.0, min(1.0, (float(s) + 1.0) * 0.5)) for s in sims.tolist()]
+
+        pil_images = [Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)) for img in images_bgr]
+        with torch.no_grad():
+            inputs = self._clip_processor(images=pil_images, return_tensors='pt', padding=True).to(self._device)
+            img_emb = self._clip_model.get_image_features(**inputs)
+            img_emb = img_emb / img_emb.norm(dim=-1, keepdim=True)
+            sims = torch.matmul(img_emb, text_emb.T).squeeze(-1).detach().cpu().numpy().reshape(-1)
+        return [max(0.0, min(1.0, (float(s) + 1.0) * 0.5)) for s in sims.tolist()]
 
     def _load_registry(self) -> dict[str, list[float]]:
         data = read_json(self.paths.registry_file, {})
@@ -517,43 +546,87 @@ class SearchService:
         use_reg = query.strip() in reg
         target = np.array(reg[query.strip()], dtype=np.float32) if use_reg else None
         clip_text_emb = None if use_reg else self._clip_text_emb(query.strip())
+        max_samples_per_clip = max(8, int(self.settings.quick_search.batch_size))
+        early_accept_score = 0.86
 
-        out: list[dict] = []
+        prepared: list[dict[str, Any]] = []
         for rec in clips:
             clip_path_raw = str(rec.get('clip_path', ''))
             clip_path, _ = self._resolve_index_media_path(clip_path_raw, self.paths.clips)
             if not clip_path.exists():
                 continue
 
-            cap = cv2.VideoCapture(str(clip_path))
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            if fps <= 0:
-                fps = 24.0
-            sample_fps = max(1, int(self.settings.quick_search.sample_fps))
-            step = max(1, int(round(float(fps) / float(sample_fps))))
-
-            idx = 0
-            best = 0.0
-            while True:
-                ok, fr = cap.read()
-                if not ok:
-                    break
-                if idx % step == 0:
-                    if use_reg and target is not None:
-                        score = _hist_score(_calc_hist(fr), target)
-                    elif clip_text_emb is not None:
-                        score = self._clip_image_score(fr, clip_text_emb)
-                    else:
-                        score, _ = _query_color_score(fr, query)
-                    if score > best:
-                        best = score
-                idx += 1
-            cap.release()
-
             thumb_raw = str(rec.get('thumbnail_path', ''))
             thumb_path, _ = self._resolve_index_media_path(thumb_raw, self.paths.thumbs)
             if not thumb_path.exists():
                 thumb_path = self._guess_thumb_path(clip_path, str(rec.get('clip_id', '')))
+
+            prepared.append({'rec': rec, 'clip_path': clip_path, 'thumb_path': thumb_path})
+
+        if not prepared:
+            return []
+
+        best_scores = [0.0 for _ in prepared]
+        scan_indices: set[int] = set(range(len(prepared)))
+
+        if clip_text_emb is not None:
+            thumb_images: list[np.ndarray] = []
+            thumb_owner_indices: list[int] = []
+            for i, p in enumerate(prepared):
+                thumb_path = p['thumb_path']
+                if isinstance(thumb_path, Path) and thumb_path.exists():
+                    thumb = cv2.imread(str(thumb_path))
+                    if thumb is not None:
+                        thumb_images.append(thumb)
+                        thumb_owner_indices.append(i)
+
+            if thumb_images:
+                thumb_scores = self._clip_image_scores_batch(thumb_images, clip_text_emb)
+                for owner_idx, score in zip(thumb_owner_indices, thumb_scores):
+                    if score > best_scores[owner_idx]:
+                        best_scores[owner_idx] = float(score)
+
+            refine_count = max(top_k * 4, 12)
+            order = sorted(range(len(prepared)), key=lambda i: best_scores[i], reverse=True)
+            scan_indices = set(order[: min(len(order), refine_count)])
+
+        out: list[dict] = []
+        for i, p in enumerate(prepared):
+            rec = p['rec']
+            clip_path = p['clip_path']
+            thumb_path = p['thumb_path']
+
+            best = float(best_scores[i])
+            if clip_text_emb is None and isinstance(thumb_path, Path) and thumb_path.exists():
+                thumb = cv2.imread(str(thumb_path))
+                if thumb is not None:
+                    best = max(best, self._score_single_image(thumb, query, use_reg, target, clip_text_emb))
+
+            cap = cv2.VideoCapture(str(clip_path))
+            if cap.isOpened() and best < early_accept_score and i in scan_indices:
+                fps = cap.get(cv2.CAP_PROP_FPS)
+                if fps <= 0:
+                    fps = 24.0
+                sample_fps = max(1, int(self.settings.quick_search.sample_fps))
+                step = max(1, int(round(float(fps) / float(sample_fps))))
+
+                idx = 0
+                sampled = 0
+                while True:
+                    ok, fr = cap.read()
+                    if not ok:
+                        break
+                    if idx % step == 0:
+                        score = self._score_single_image(fr, query, use_reg, target, clip_text_emb)
+                        if score > best:
+                            best = score
+                        sampled += 1
+                        if sampled >= max_samples_per_clip:
+                            break
+                        if best >= 0.96:
+                            break
+                    idx += 1
+            cap.release()
 
             out.append(
                 {
