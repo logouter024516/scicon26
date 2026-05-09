@@ -3,10 +3,11 @@ import { apiClient } from '../../api/client';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
-import type { CaptureStateDto } from '../../types/domain';
+import type { CameraDeviceDto, CaptureStateDto } from '../../types/domain';
 
 export function CapturePage() {
   const [cameraIndex, setCameraIndex] = useState('0');
+  const [devices, setDevices] = useState<CameraDeviceDto[]>([]);
   const [state, setState] = useState<CaptureStateDto | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,8 +26,21 @@ export function CapturePage() {
     }
   }
 
+  async function refreshDevices() {
+    try {
+      const ds = await apiClient.captureDevices(12);
+      setDevices(ds);
+      if (ds.length > 0 && !ds.some((d) => String(d.index) === cameraIndex)) {
+        setCameraIndex(String(ds[0].index));
+      }
+    } catch {
+      setDevices([]);
+    }
+  }
+
   useEffect(() => {
-    refreshState();
+    void refreshState();
+    void refreshDevices();
   }, []);
 
   useEffect(() => {
@@ -100,10 +114,33 @@ export function CapturePage() {
             />
           </div>
 
+          {devices.length > 0 && (
+            <div className="field-row">
+              <Label htmlFor="camera-device-select">Detected devices</Label>
+              <select
+                id="camera-device-select"
+                className="ui-select"
+                value={cameraIndex}
+                onChange={(e) => setCameraIndex(e.target.value)}
+              >
+                {devices.map((d) => (
+                  <option key={d.index} value={String(d.index)}>
+                    {d.label} ({d.width ?? 0}x{d.height ?? 0})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="btn-row">
             <Button className="w-full btn-intent-start" onClick={onStart} disabled={loading || state?.running}>Start Capture</Button>
             <Button className="w-full btn-intent-stop" onClick={onStop} variant="outline" disabled={loading}>Stop Capture</Button>
-            <Button className="w-full btn-intent-refresh" onClick={refreshState} variant="ghost" disabled={loading}>Refresh State</Button>
+            <Button className="w-full btn-intent-refresh" onClick={() => { void refreshState(); void refreshDevices(); }} variant="ghost" disabled={loading}>Refresh State</Button>
+          </div>
+
+          <div className="result-box" style={{ marginTop: 10 }}>
+            <p><strong>무선 차단 환경 추천</strong></p>
+            <p className="muted">iPhone/Android를 USB 웹캠 앱(예: Camo, Iriun, DroidCam)으로 연결 후, 위 목록의 카메라 인덱스를 선택해 사용하세요.</p>
           </div>
 
           {error && <p className="error">{error}</p>}

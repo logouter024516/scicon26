@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 import re
+import os
 
 import cv2
 import numpy as np
@@ -124,7 +125,17 @@ class SearchService:
     def _open_capture(self, source: str) -> cv2.VideoCapture:
         s = str(source).strip()
         if s.isdigit() or (s.startswith('-') and s[1:].isdigit()):
-            return cv2.VideoCapture(int(s))
+            idx = int(s)
+            if os.name == 'nt':
+                cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+                cap = cv2.VideoCapture(idx, cv2.CAP_MSMF)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+            return cv2.VideoCapture(idx)
         return cv2.VideoCapture(s)
 
     def _ensure_yolo(self) -> bool:
@@ -303,6 +314,27 @@ class SearchService:
             raise RuntimeError('camera read failed')
         return frame
 
+    def _resolve_clip_path(self, rec: dict[str, Any]) -> Path | None:
+        raw = Path(str(rec.get('clip_path', '')))
+        if raw.exists():
+            return raw
+
+        # index.json 경로가 예전 작업 디렉터리를 가리킬 수 있으므로
+        # 현재 data/clips 기준으로 파일명을 재해석한다.
+        name = raw.name
+        if name:
+            local = self.paths.clips / name
+            if local.exists():
+                return local
+
+        clip_id = str(rec.get('clip_id', '')).strip()
+        if clip_id:
+            local_by_id = self.paths.clips / f'{clip_id}.mp4'
+            if local_by_id.exists():
+                return local_by_id
+
+        return None
+
     def capture_frame(
         self,
         camera_index: int = 0,
@@ -379,8 +411,8 @@ class SearchService:
 
         out: list[dict] = []
         for rec in clips:
-            clip_path = Path(str(rec.get('clip_path', '')))
-            if not clip_path.exists():
+            clip_path = self._resolve_clip_path(rec)
+            if clip_path is None:
                 continue
 
             cap = cv2.VideoCapture(str(clip_path))

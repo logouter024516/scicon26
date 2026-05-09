@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response
 from pydantic import BaseModel
 import cv2
 import numpy as np
+import os
 
 from app.schemas import CaptureStateResponse
 from app.store import store
@@ -22,6 +23,31 @@ class CaptureStartRequest(BaseModel):
     cameraIndex: int = 0
     cameraId: str | None = None
     cameraSource: str | None = None
+
+
+@router.get('/devices')
+def capture_devices(maxIndex: int = 10) -> list[dict]:
+    out: list[dict] = []
+    max_idx = max(1, min(int(maxIndex), 30))
+    for i in range(max_idx):
+        if os.name == 'nt':
+            cap = cv2.VideoCapture(i, cv2.CAP_DSHOW)
+            if not cap.isOpened():
+                cap.release()
+                cap = cv2.VideoCapture(i, cv2.CAP_MSMF)
+        else:
+            cap = cv2.VideoCapture(i)
+        if not cap.isOpened():
+            cap.release()
+            continue
+        ok, fr = cap.read()
+        w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
+        h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
+        cap.release()
+        if not ok or fr is None:
+            continue
+        out.append({'index': i, 'label': f'Camera {i}', 'width': w, 'height': h})
+    return out
 
 
 @router.post('/start', response_model=CaptureStateResponse)

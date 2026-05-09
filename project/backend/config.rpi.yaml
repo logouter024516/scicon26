@@ -1,0 +1,21 @@
+camera:
+  source: "0"
+  fps: 12
+  resolution: [640, 360]
+
+capture:
+  pre_buffer_sec: 3
+  post_buffer_sec: 6
+  motion_threshold: 1500
+  stillness_sec: 2.0
+
+live_search:
+  model: "yolov8n-worldv2.pt"
+  confidence: 0.4
+  device: "cpu"
+
+quick_search:
+  sample_fps: 1
+  batch_size: 16
+  top_k: 3
+  clip_model: "ViT-B/32"

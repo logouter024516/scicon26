@@ -643,6 +643,390 @@
       "camera_id": "ambient_cam_0",
       "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174531_101072.mp4",
       "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174531_101072.jpg"
+    },
+    {
+      "clip_id": "20260412_174607_213411",
+      "event_at": "2026-04-12T17:46:07",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174607_213411.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174607_213411.jpg"
+    },
+    {
+      "clip_id": "20260412_174655_715379",
+      "event_at": "2026-04-12T17:46:56",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174655_715379.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174655_715379.jpg"
+    },
+    {
+      "clip_id": "20260412_174706_790752",
+      "event_at": "2026-04-12T17:47:07",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174706_790752.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174706_790752.jpg"
+    },
+    {
+      "clip_id": "20260412_174857_142031",
+      "event_at": "2026-04-12T17:48:57",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174857_142031.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174857_142031.jpg"
+    },
+    {
+      "clip_id": "20260412_174911_872463",
+      "event_at": "2026-04-12T17:49:12",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174911_872463.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174911_872463.jpg"
+    },
+    {
+      "clip_id": "20260412_174947_642089",
+      "event_at": "2026-04-12T17:49:48",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_174947_642089.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_174947_642089.jpg"
+    },
+    {
+      "clip_id": "20260412_175010_586832",
+      "event_at": "2026-04-12T17:50:11",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175010_586832.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175010_586832.jpg"
+    },
+    {
+      "clip_id": "20260412_175048_341074",
+      "event_at": "2026-04-12T17:50:48",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175048_341074.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175048_341074.jpg"
+    },
+    {
+      "clip_id": "20260412_175103_542386",
+      "event_at": "2026-04-12T17:51:03",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175103_542386.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175103_542386.jpg"
+    },
+    {
+      "clip_id": "20260412_175139_031619",
+      "event_at": "2026-04-12T17:51:39",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175139_031619.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175139_031619.jpg"
+    },
+    {
+      "clip_id": "20260412_175204_020546",
+      "event_at": "2026-04-12T17:52:04",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175204_020546.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175204_020546.jpg"
+    },
+    {
+      "clip_id": "20260412_175231_840107",
+      "event_at": "2026-04-12T17:52:32",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175231_840107.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175231_840107.jpg"
+    },
+    {
+      "clip_id": "20260412_175254_104794",
+      "event_at": "2026-04-12T17:52:54",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175254_104794.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175254_104794.jpg"
+    },
+    {
+      "clip_id": "20260412_175303_200554",
+      "event_at": "2026-04-12T17:53:03",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175303_200554.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175303_200554.jpg"
+    },
+    {
+      "clip_id": "20260412_175333_955449",
+      "event_at": "2026-04-12T17:53:34",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175333_955449.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175333_955449.jpg"
+    },
+    {
+      "clip_id": "20260412_175342_588442",
+      "event_at": "2026-04-12T17:53:42",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175342_588442.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175342_588442.jpg"
+    },
+    {
+      "clip_id": "20260412_175402_454545",
+      "event_at": "2026-04-12T17:54:02",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175402_454545.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175402_454545.jpg"
+    },
+    {
+      "clip_id": "20260412_175416_768068",
+      "event_at": "2026-04-12T17:54:17",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175416_768068.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175416_768068.jpg"
+    },
+    {
+      "clip_id": "20260412_175440_039882",
+      "event_at": "2026-04-12T17:54:40",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175440_039882.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175440_039882.jpg"
+    },
+    {
+      "clip_id": "20260412_175455_299467",
+      "event_at": "2026-04-12T17:54:55",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175455_299467.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175455_299467.jpg"
+    },
+    {
+      "clip_id": "20260412_175541_323603",
+      "event_at": "2026-04-12T17:55:41",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175541_323603.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175541_323603.jpg"
+    },
+    {
+      "clip_id": "20260412_175553_361189",
+      "event_at": "2026-04-12T17:55:53",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175553_361189.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175553_361189.jpg"
+    },
+    {
+      "clip_id": "20260412_175601_826266",
+      "event_at": "2026-04-12T17:56:02",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175601_826266.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175601_826266.jpg"
+    },
+    {
+      "clip_id": "20260412_175619_453692",
+      "event_at": "2026-04-12T17:56:19",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175619_453692.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175619_453692.jpg"
+    },
+    {
+      "clip_id": "20260412_175652_694868",
+      "event_at": "2026-04-12T17:56:53",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175652_694868.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175652_694868.jpg"
+    },
+    {
+      "clip_id": "20260412_175703_061184",
+      "event_at": "2026-04-12T17:57:03",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175703_061184.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175703_061184.jpg"
+    },
+    {
+      "clip_id": "20260412_175716_059403",
+      "event_at": "2026-04-12T17:57:16",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175716_059403.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175716_059403.jpg"
+    },
+    {
+      "clip_id": "20260412_175753_236859",
+      "event_at": "2026-04-12T17:57:53",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175753_236859.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175753_236859.jpg"
+    },
+    {
+      "clip_id": "20260412_175849_349446",
+      "event_at": "2026-04-12T17:58:49",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175849_349446.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175849_349446.jpg"
+    },
+    {
+      "clip_id": "20260412_175920_698861",
+      "event_at": "2026-04-12T17:59:21",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175920_698861.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175920_698861.jpg"
+    },
+    {
+      "clip_id": "20260412_175933_101464",
+      "event_at": "2026-04-12T17:59:33",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_175933_101464.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_175933_101464.jpg"
+    },
+    {
+      "clip_id": "20260412_180016_604258",
+      "event_at": "2026-04-12T18:00:17",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180016_604258.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180016_604258.jpg"
+    },
+    {
+      "clip_id": "20260412_180029_850625",
+      "event_at": "2026-04-12T18:00:30",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180029_850625.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180029_850625.jpg"
+    },
+    {
+      "clip_id": "20260412_180117_424661",
+      "event_at": "2026-04-12T18:01:18",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180117_424661.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180117_424661.jpg"
+    },
+    {
+      "clip_id": "20260412_180132_713803",
+      "event_at": "2026-04-12T18:01:33",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180132_713803.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180132_713803.jpg"
+    },
+    {
+      "clip_id": "20260412_180153_178123",
+      "event_at": "2026-04-12T18:01:54",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180153_178123.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180153_178123.jpg"
+    },
+    {
+      "clip_id": "20260412_180206_736992",
+      "event_at": "2026-04-12T18:02:07",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180206_736992.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180206_736992.jpg"
+    },
+    {
+      "clip_id": "20260412_180226_390888",
+      "event_at": "2026-04-12T18:02:26",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180226_390888.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180226_390888.jpg"
+    },
+    {
+      "clip_id": "20260412_180248_855010",
+      "event_at": "2026-04-12T18:02:49",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180248_855010.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180248_855010.jpg"
+    },
+    {
+      "clip_id": "20260412_180314_713397",
+      "event_at": "2026-04-12T18:03:15",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180314_713397.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180314_713397.jpg"
+    },
+    {
+      "clip_id": "20260412_180335_034419",
+      "event_at": "2026-04-12T18:03:35",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180335_034419.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180335_034419.jpg"
+    },
+    {
+      "clip_id": "20260412_180345_440674",
+      "event_at": "2026-04-12T18:03:45",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180345_440674.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180345_440674.jpg"
+    },
+    {
+      "clip_id": "20260412_180404_439362",
+      "event_at": "2026-04-12T18:04:04",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180404_439362.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180404_439362.jpg"
+    },
+    {
+      "clip_id": "20260412_180417_492788",
+      "event_at": "2026-04-12T18:04:17",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180417_492788.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180417_492788.jpg"
+    },
+    {
+      "clip_id": "20260412_180437_550977",
+      "event_at": "2026-04-12T18:04:38",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180437_550977.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180437_550977.jpg"
+    },
+    {
+      "clip_id": "20260412_180448_791814",
+      "event_at": "2026-04-12T18:04:49",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180448_791814.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180448_791814.jpg"
+    },
+    {
+      "clip_id": "20260412_180506_835948",
+      "event_at": "2026-04-12T18:05:07",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180506_835948.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180506_835948.jpg"
+    },
+    {
+      "clip_id": "20260412_180526_351007",
+      "event_at": "2026-04-12T18:05:26",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/clips/20260412_180526_351007.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr/project/backend/data/thumbs/20260412_180526_351007.jpg"
+    },
+    {
+      "clip_id": "20260415_100408_017754",
+      "event_at": "2026-04-15T10:04:09",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_100408_017754.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_100408_017754.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260415_100435_082099",
+      "event_at": "2026-04-15T10:04:36",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_100435_082099.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_100435_082099.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260415_100552_448703",
+      "event_at": "2026-04-15T10:05:53",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_100552_448703.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_100552_448703.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260415_100610_537647",
+      "event_at": "2026-04-15T10:06:11",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_100610_537647.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_100610_537647.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260415_100630_000191",
+      "event_at": "2026-04-15T10:06:31",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_100630_000191.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_100630_000191.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260415_105501_578818",
+      "event_at": "2026-04-15T10:55:03",
+      "camera_id": "ambient_cam_0",
+      "clip_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/clips/20260415_105501_578818.mp4",
+      "thumbnail_path": "D:/01_prj/00_scicon26_ocr_backup/project/backend/data/thumbs/20260415_105501_578818.jpg",
+      "codec": "avc1"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import type {
+  CameraDeviceDto,
   CaptureStateDto,
   ClipDto,
   HealthDto,
@@ -40,10 +41,13 @@ export const apiClient = {
     return `${API_BASE}/api/v1/capture/preview${q}`;
   },
 
-  liveFrameUrl(cameraIndex = 0, cacheBust?: number): string {
+  liveFrameUrl(cameraIndex = 0, cacheBust?: number, cameraSource?: string): string {
     if (USE_MOCK) return '';
-    const q = typeof cacheBust === 'number' ? `&t=${cacheBust}` : '';
-    return `${API_BASE}/api/v1/live/frame?cameraIndex=${cameraIndex}${q}`;
+    const params = new URLSearchParams();
+    params.set('cameraIndex', String(cameraIndex));
+    if (cameraSource?.trim()) params.set('cameraSource', cameraSource.trim());
+    if (typeof cacheBust === 'number') params.set('t', String(cacheBust));
+    return `${API_BASE}/api/v1/live/frame?${params.toString()}`;
   },
 
   clipUrl(fileName?: string): string {
@@ -97,6 +101,11 @@ export const apiClient = {
     return http<CaptureStateDto>('/api/v1/capture/state');
   },
 
+  async captureDevices(maxIndex = 10): Promise<CameraDeviceDto[]> {
+    if (USE_MOCK) return [{ index: 0, label: 'Camera 0', width: 640, height: 480 }];
+    return http<CameraDeviceDto[]>(`/api/v1/capture/devices?maxIndex=${maxIndex}`);
+  },
+
   async startCapture(cameraIndex: number): Promise<CaptureStateDto> {
     if (USE_MOCK) return { running: true, cameraIndex };
     return http<CaptureStateDto>('/api/v1/capture/start', {
@@ -145,6 +154,94 @@ export const apiClient = {
       throw new Error(`API ${res.status}: ${await res.text()}`);
     }
     return (await res.json()) as LiveResultDto;
+  },
+
+  async liveSearchUnified(args: {
+    query: string;
+    imageBlob?: Blob | null;
+    fileName?: string;
+    phoneSessionId?: string;
+    cameraIndex?: number;
+    cameraId?: string;
+    cameraSource?: string;
+  }): Promise<LiveResultDto> {
+    if (USE_MOCK) {
+      const score = args.query.trim().length > 2 ? 0.81 : 0.42;
+      return {
+        found: score >= 0.5,
+        score,
+        detail: `mock live unified response for ${args.query}`,
+      };
+    }
+    const form = new FormData();
+    form.set('query', args.query);
+    form.set('cameraIndex', String(args.cameraIndex ?? 0));
+    if (args.phoneSessionId) form.set('phoneSessionId', args.phoneSessionId);
+    if (args.cameraId) form.set('cameraId', args.cameraId);
+    if (args.cameraSource) form.set('cameraSource', args.cameraSource);
+    if (args.imageBlob) {
+      form.append('image', args.imageBlob, args.fileName ?? 'frame.jpg');
+    }
+    const res = await fetch(`${API_BASE}/api/v1/live/search-unified`, {
+      method: 'POST',
+      body: form,
+    });
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${await res.text()}`);
+    }
+    return (await res.json()) as LiveResultDto;
+  },
+
+  async createPhoneSession(): Promise<{ sessionId: string }> {
+    if (USE_MOCK) return { sessionId: 'mock-phone-session' };
+    return http<{ sessionId: string }>('/api/v1/phone/sessions', { method: 'POST' });
+  },
+
+  async phoneSessionExists(sessionId: string): Promise<{ ok: boolean; sessionId: string }> {
+    if (USE_MOCK) return { ok: true, sessionId };
+    return http<{ ok: boolean; sessionId: string }>(`/api/v1/phone/sessions/${encodeURIComponent(sessionId)}/exists`);
+  },
+
+  async phoneNetworkInfo(): Promise<{ hosts: string[] }> {
+    if (USE_MOCK) return { hosts: [] };
+    return http<{ hosts: string[] }>('/api/v1/phone/network');
+  },
+
+  async startPhoneTunnel(targetUrl = window.location.origin): Promise<{ running: boolean; publicUrl: string; detail: string }> {
+    if (USE_MOCK) return { running: true, publicUrl: targetUrl, detail: 'mock tunnel' };
+    const form = new FormData();
+    form.set('targetUrl', targetUrl);
+    const res = await fetch(`${API_BASE}/api/v1/phone/tunnel/start`, {
+      method: 'POST',
+      body: form,
+    });
+    if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
+    return (await res.json()) as { running: boolean; publicUrl: string; detail: string };
+  },
+
+  async phoneTunnelStatus(): Promise<{ running: boolean; publicUrl: string; detail: string }> {
+    if (USE_MOCK) return { running: false, publicUrl: '', detail: '' };
+    return http<{ running: boolean; publicUrl: string; detail: string }>('/api/v1/phone/tunnel/status');
+  },
+
+  async uploadPhoneFrame(sessionId: string, imageBlob: Blob, fileName = 'phone-frame.jpg'): Promise<{ ok: boolean; sessionId: string; ts: string }> {
+    if (USE_MOCK) return { ok: true, sessionId, ts: String(Date.now()) };
+    const form = new FormData();
+    form.append('image', imageBlob, fileName);
+    form.set('ts', String(Date.now()));
+    const res = await fetch(`${API_BASE}/api/v1/phone/sessions/${encodeURIComponent(sessionId)}/frame`, {
+      method: 'POST',
+      body: form,
+    });
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${await res.text()}`);
+    }
+    return (await res.json()) as { ok: boolean; sessionId: string; ts: string };
+  },
+
+  phoneFrameUrl(sessionId: string, cacheBust?: number): string {
+    const q = typeof cacheBust === 'number' ? `?t=${cacheBust}` : '';
+    return `${API_BASE}/api/v1/phone/sessions/${encodeURIComponent(sessionId)}/frame${q}`;
   },
 
   async pipelineFind(query: string, cameraIndex = 0, topK = 5): Promise<PipelineResultDto> {

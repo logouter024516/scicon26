@@ -24,6 +24,13 @@ export interface CaptureStateDto {
   cameraIndex: number;
 }
 
+export interface CameraDeviceDto {
+  index: number;
+  label: string;
+  width?: number;
+  height?: number;
+}
+
 export interface LiveResultDto {
   found: boolean;
   score: number;

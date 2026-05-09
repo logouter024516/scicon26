@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from app.config import Paths, ensure_dirs
 from app.settings import AppSettings, load_settings
 from app.services.capture_service import CaptureService
+from app.services.phone_stream_service import PhoneStreamService
+from app.services.phone_tunnel_service import PhoneTunnelService
 from app.services.search_service import SearchService
 from app.utils import read_json
 
@@ -13,6 +15,8 @@ class AppStore:
     settings: AppSettings
     capture: CaptureService
     search: SearchService
+    phone: PhoneStreamService
+    tunnel: PhoneTunnelService
 
     def total_clips(self) -> int:
         data = read_json(self.paths.index_file, {'clips': []})
@@ -32,4 +36,6 @@ store = AppStore(
     settings=_settings,
     capture=CaptureService(_paths, _settings),
     search=SearchService(_paths, _settings),
+    phone=PhoneStreamService(),
+    tunnel=PhoneTunnelService(),
 )

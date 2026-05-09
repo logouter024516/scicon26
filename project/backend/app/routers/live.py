@@ -67,15 +67,74 @@ async def live_search_image(
         return LiveSearchResponse(found=False, score=0.0, detail=f'live image search failed: {e}')
 
 
+@router.post('/search-unified', response_model=LiveSearchResponse)
+async def live_search_unified(
+    query: str = Form(...),
+    image: UploadFile | None = File(default=None),
+    phoneSessionId: str | None = Form(default=None),
+    cameraIndex: int = Form(default=0),
+    cameraId: str | None = Form(default=None),
+    cameraSource: str | None = Form(default=None),
+) -> LiveSearchResponse:
+    q = query.strip()
+    if not q:
+        return LiveSearchResponse(found=False, score=0.0, detail='query is empty')
+
+    try:
+        if image is not None:
+            raw = await image.read()
+            arr = np.frombuffer(raw, dtype=np.uint8)
+            frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+            if frame is None:
+                return LiveSearchResponse(found=False, score=0.0, detail='invalid image frame')
+            result = store.search.live_search_on_frame(q, frame)
+        elif phoneSessionId:
+            frame = store.phone.get_frame_bgr(phoneSessionId)
+            if frame is None:
+                return LiveSearchResponse(found=False, score=0.0, detail='phone frame not ready')
+            result = store.search.live_search_on_frame(q, frame)
+        else:
+            result = store.search.live_search(
+                q,
+                camera_index=cameraIndex,
+                camera_id=cameraId,
+                camera_source=cameraSource,
+            )
+
+        bbox = list(result.bbox_norm) if result.bbox_norm is not None else None
+        return LiveSearchResponse(found=result.found, score=result.score, detail=result.detail, bboxNorm=bbox)
+    except Exception as e:
+        return LiveSearchResponse(found=False, score=0.0, detail=f'live unified search failed: {e}')
+
+
 @router.get('/frame')
 def live_frame(
     cameraIndex: int = Query(default=0),
     cameraId: str | None = Query(default=None),
     cameraSource: str | None = Query(default=None),
 ) -> Response:
-    try:
-        frame = store.search.capture_frame(camera_index=cameraIndex, camera_id=cameraId, camera_source=cameraSource)
-    except Exception:
+    frame = None
+    resolved_camera_id = (cameraId or f'ambient_cam_{cameraIndex}').strip() or f'ambient_cam_{cameraIndex}'
+
+    st = store.capture.get_state(camera_id=resolved_camera_id)
+    if st.running:
+        p = store.capture.get_preview_path(resolved_camera_id)
+        if not p.exists() and resolved_camera_id == 'ambient_cam_0':
+            p = store.paths.preview
+        if p.exists():
+            frame = cv2.imread(str(p))
+
+    if frame is None:
+        try:
+            frame = store.search.capture_frame(camera_index=cameraIndex, camera_id=cameraId, camera_source=cameraSource)
+        except Exception:
+            return Response(
+                content=_placeholder_jpeg(),
+                media_type='image/jpeg',
+                headers={'X-Placeholder': '1', 'Cache-Control': 'no-store, max-age=0'},
+            )
+
+    if frame is None:
         return Response(
             content=_placeholder_jpeg(),
             media_type='image/jpeg',

@@ -19,6 +19,36 @@ def _safe_name(name: str) -> str:
     return name
 
 
+def _resolve_clip_path_from_record(rec: dict) -> Path | None:
+    raw = Path(str(rec.get('clip_path', '')))
+    if raw.exists():
+        return raw
+
+    name = raw.name
+    if name:
+        local = store.paths.clips / name
+        if local.exists():
+            return local
+
+    clip_id = str(rec.get('clip_id', '')).strip()
+    if clip_id:
+        local_by_id = store.paths.clips / f'{clip_id}.mp4'
+        if local_by_id.exists():
+            return local_by_id
+
+    return None
+
+
+def _resolve_thumb_path_from_record(rec: dict) -> Path:
+    raw = Path(str(rec.get('thumbnail_path', '')))
+    if raw.name:
+        return store.paths.thumbs / raw.name
+    clip_id = str(rec.get('clip_id', '')).strip()
+    if clip_id:
+        return store.paths.thumbs / f'{clip_id}.jpg'
+    return store.paths.thumbs / 'unknown.jpg'
+
+
 def _try_rebuild_thumb(name: str) -> bool:
     data = read_json(store.paths.index_file, {'clips': []})
     clips = data.get('clips') if isinstance(data, dict) else []
@@ -35,9 +65,9 @@ def _try_rebuild_thumb(name: str) -> bool:
     if target is None:
         return False
 
-    clip_path = Path(str(target.get('clip_path', '')))
-    thumb_path = Path(str(target.get('thumbnail_path', '')))
-    if not clip_path.exists():
+    clip_path = _resolve_clip_path_from_record(target)
+    thumb_path = store.paths.thumbs / name
+    if clip_path is None:
         return False
 
     cap = cv2.VideoCapture(str(clip_path))
@@ -158,12 +188,12 @@ def delete_clip_by_id(clip_id: str):
     if target is None:
         raise HTTPException(status_code=404, detail='clip not found')
 
-    clip_path = Path(str(target.get('clip_path', '')))
-    thumb_path = Path(str(target.get('thumbnail_path', '')))
+    clip_path = _resolve_clip_path_from_record(target)
+    thumb_path = _resolve_thumb_path_from_record(target)
 
     for p in (clip_path, thumb_path):
         try:
-            if p.exists():
+            if p is not None and p.exists():
                 p.unlink()
         except Exception:
             raise HTTPException(status_code=409, detail='file is in use; stop capture and retry')

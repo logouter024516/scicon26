@@ -4,6 +4,7 @@ import { Button } from './components/ui/button';
 import { CapturePage } from './features/capture/CapturePage';
 import { HomePage } from './features/home/HomePage';
 import { LivePage } from './features/live/LivePage';
+import { PhoneSenderPage } from './features/live/PhoneSenderPage';
 import { QuickPage } from './features/quick/QuickPage';
 import { RegisterPage } from './features/register/RegisterPage';
 import type { TabKey } from './types/domain';
@@ -11,6 +12,15 @@ import type { TabKey } from './types/domain';
 type ThemeMode = 'light' | 'dark';
 
 export function App() {
+  const isPhoneSenderMode = useMemo(() => {
+    const p = new URLSearchParams(window.location.search);
+    return p.get('phone') === '1';
+  }, []);
+
+  if (isPhoneSenderMode) {
+    return <PhoneSenderPage />;
+  }
+
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [theme, setTheme] = useState<ThemeMode>('light');
   const [toast, setToast] = useState<{ message: string; tone: 'success' | 'error' | 'info' } | null>(null);

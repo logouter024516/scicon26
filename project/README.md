@@ -63,14 +63,40 @@ npm run dev
 
 브라우저: http://localhost:5173
 
+## Raspberry Pi 4B (4GB) 경량 실행 (YOLO/CLIP 사용)
+
+RPi에서도 **YOLO-World + CLIP**을 사용하도록 **경량 설정 + ML 의존성**을 제공합니다.
+
+### 1) Backend (RPi용 ML 의존성)
+
+```bash
+cd backend
+pip install -r requirements.rpi-ml.txt
+```
+
+### 2) 경량 설정 적용
+
+```bash
+cp config.rpi.yaml config.yaml
+```
+
+### 3) 실행
+
+```bash
+python -m uvicorn app.main:app --app-dir . --host 0.0.0.0 --port 8080 --reload
+```
+
+RPi 환경에서는 `yolov8n-worldv2.pt` + `CLIP ViT-B/32` 조합을 기본으로 사용하며,
+낮은 해상도/낮은 FPS로 CPU 부하를 줄입니다.
+
 ## 환경 변수 (선택)
 
 Frontend:
 
-- `VITE_API_BASE_URL` (default: `http://localhost:8000`)
+- `VITE_API_BASE_URL` (default: `http://localhost:8080`)
 - `VITE_USE_MOCK` (default: `false`)
 
-기본값으로 FastAPI에 연결됩니다.
+기본값으로 FastAPI(8080)에 연결됩니다.
 
 ## 실제 동작(현재 구현)
 

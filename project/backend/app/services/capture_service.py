@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 import re
+import os
 
 import cv2
 import numpy as np
@@ -93,7 +94,17 @@ class CaptureService:
     def _open_capture(self, camera_source: str) -> cv2.VideoCapture:
         src = str(camera_source).strip()
         if src.isdigit() or (src.startswith('-') and src[1:].isdigit()):
-            return cv2.VideoCapture(int(src))
+            idx = int(src)
+            if os.name == 'nt':
+                cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+                cap = cv2.VideoCapture(idx, cv2.CAP_MSMF)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+            return cv2.VideoCapture(idx)
         return cv2.VideoCapture(src)
 
     def start(self, camera_index: int = 0, camera_id: str | None = None, camera_source: str | None = None) -> CaptureState:
