@@ -651,6 +651,150 @@
       "clip_path": "D:/01_prj/scicon26/project/backend/data/clips/20260415_110132_961561.mp4",
       "thumbnail_path": "D:/01_prj/scicon26/project/backend/data/thumbs/20260415_110132_961561.jpg",
       "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_182609_125525",
+      "event_at": "2026-05-17T18:26:10",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_182609_125525.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_182609_125525.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_182628_986507",
+      "event_at": "2026-05-17T18:26:29",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_182628_986507.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_182628_986507.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_182919_898882",
+      "event_at": "2026-05-17T18:29:20",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_182919_898882.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_182919_898882.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_182937_568085",
+      "event_at": "2026-05-17T18:29:37",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_182937_568085.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_182937_568085.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_182955_834483",
+      "event_at": "2026-05-17T18:29:56",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_182955_834483.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_182955_834483.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183013_647514",
+      "event_at": "2026-05-17T18:30:15",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183013_647514.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183013_647514.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183021_567079",
+      "event_at": "2026-05-17T18:30:21",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183021_567079.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183021_567079.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183033_624529",
+      "event_at": "2026-05-17T18:30:34",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183033_624529.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183033_624529.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183049_749354",
+      "event_at": "2026-05-17T18:30:50",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183049_749354.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183049_749354.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183111_108040",
+      "event_at": "2026-05-17T18:31:11",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183111_108040.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183111_108040.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183128_547637",
+      "event_at": "2026-05-17T18:31:28",
+      "camera_id": "ambient_cam_1",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183128_547637.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183128_547637.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183711_152514",
+      "event_at": "2026-05-17T18:37:11",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183711_152514.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183711_152514.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183722_845198",
+      "event_at": "2026-05-17T18:37:23",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183722_845198.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183722_845198.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183917_057115",
+      "event_at": "2026-05-17T18:39:17",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183917_057115.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183917_057115.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_183925_093298",
+      "event_at": "2026-05-17T18:39:25",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_183925_093298.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_183925_093298.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_184129_679787",
+      "event_at": "2026-05-17T18:41:30",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_184129_679787.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_184129_679787.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_184142_156710",
+      "event_at": "2026-05-17T18:41:43",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_184142_156710.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_184142_156710.jpg",
+      "codec": "avc1"
+    },
+    {
+      "clip_id": "20260517_184239_987839",
+      "event_at": "2026-05-17T18:42:40",
+      "camera_id": "ambient_cam_2",
+      "clip_path": "D:/scicon/project/backend/data/clips/20260517_184239_987839.mp4",
+      "thumbnail_path": "D:/scicon/project/backend/data/thumbs/20260517_184239_987839.jpg",
+      "codec": "avc1"
     }
   ]
 }

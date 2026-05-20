@@ -1,0 +1,1 @@
+register에 사진 넣을때 전부다 blurry로 태그 설정됨

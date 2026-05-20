@@ -34,7 +34,7 @@ except Exception:  # pragma: no cover
 
 from app.config import Paths
 from app.settings import AppSettings
-from app.utils import read_json, write_json
+from app.utils import read_json, translate_ko_to_en, write_json
 
 
 @dataclass(slots=True)
@@ -544,6 +544,8 @@ class SearchService:
         frame = self._capture_frame(camera_index, camera_id, camera_source)
         reg = self._load_registry()
         q = query.strip()
+        if q and q not in reg:
+            q = translate_ko_to_en(q)
 
         yolo_score, yolo_bbox = self._yolo_query_score(frame, q)
         if yolo_score >= 0.35:
@@ -568,6 +570,8 @@ class SearchService:
     def live_search_on_frame(self, query: str, frame: np.ndarray) -> LiveResult:
         reg = self._load_registry()
         q = query.strip()
+        if q and q not in reg:
+            q = translate_ko_to_en(q)
 
         yolo_score, yolo_bbox = self._yolo_query_score(frame, q)
         if yolo_score >= 0.35:
@@ -593,9 +597,12 @@ class SearchService:
         clips = self._load_quick_index_records()
 
         reg = self._load_registry()
-        use_reg = query.strip() in reg
-        target = np.array(reg[query.strip()], dtype=np.float32) if use_reg else None
-        clip_text_emb = None if (use_reg or not bool(self.settings.quick_search.use_clip)) else self._clip_text_emb(query.strip())
+        q = query.strip()
+        if q and q not in reg:
+            q = translate_ko_to_en(q)
+        use_reg = q in reg
+        target = np.array(reg[q], dtype=np.float32) if use_reg else None
+        clip_text_emb = None if (use_reg or not bool(self.settings.quick_search.use_clip)) else self._clip_text_emb(q)
         max_samples_per_clip = max(1, int(self.settings.quick_search.batch_size))
         early_accept_score = 0.86
         thumbnail_only = bool(self.settings.quick_search.thumbnail_only)
@@ -654,7 +661,7 @@ class SearchService:
             if clip_text_emb is None and isinstance(thumb_path, Path) and thumb_path.exists():
                 thumb = cv2.imread(str(thumb_path))
                 if thumb is not None:
-                    best = max(best, self._score_single_image(thumb, query, use_reg, target, clip_text_emb))
+                    best = max(best, self._score_single_image(thumb, q, use_reg, target, clip_text_emb))
 
             cap = cv2.VideoCapture(str(clip_path))
             if cap.isOpened() and best < early_accept_score and i in scan_indices:
@@ -671,7 +678,7 @@ class SearchService:
                     if not ok:
                         break
                     if idx % step == 0:
-                        score = self._score_single_image(fr, query, use_reg, target, clip_text_emb)
+                        score = self._score_single_image(fr, q, use_reg, target, clip_text_emb)
                         if score > best:
                             best = score
                         sampled += 1

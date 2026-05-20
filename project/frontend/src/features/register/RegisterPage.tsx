@@ -14,6 +14,9 @@ const REGISTER_DARK_THRESHOLD_KEY = 'mf.register.quality.darkThreshold';
 const REGISTER_BRIGHT_THRESHOLD_KEY = 'mf.register.quality.brightThreshold';
 const REGISTER_BLUR_THRESHOLD_KEY = 'mf.register.quality.blurThreshold';
 
+const BLUR_THRESHOLD_MIN = 1;
+const BLUR_THRESHOLD_MAX = 8;
+
 type FileQuality = {
   tone: 'ok' | 'warn';
   labels: string[];
@@ -22,10 +25,19 @@ type FileQuality = {
 type QualityPreset = 'strict' | 'normal' | 'relaxed' | 'custom';
 
 const QUALITY_PRESETS: Record<Exclude<QualityPreset, 'custom'>, { dark: number; bright: number; blur: number }> = {
-  strict: { dark: 85, bright: 195, blur: 14 },
-  normal: { dark: 70, bright: 210, blur: 11 },
-  relaxed: { dark: 55, bright: 225, blur: 8 },
+  strict: { dark: 85, bright: 195, blur: 5 },
+  normal: { dark: 70, bright: 210, blur: 3.5 },
+  relaxed: { dark: 55, bright: 225, blur: 2.5 },
 };
+
+function normalizeBlurThreshold(value: number): number {
+  if (!Number.isFinite(value)) return QUALITY_PRESETS.normal.blur;
+  if (value > BLUR_THRESHOLD_MAX) {
+    const scaled = value / 3;
+    return Math.max(BLUR_THRESHOLD_MIN, Math.min(BLUR_THRESHOLD_MAX, scaled));
+  }
+  return Math.max(BLUR_THRESHOLD_MIN, Math.min(BLUR_THRESHOLD_MAX, value));
+}
 
 export function RegisterPage() {
   const [name, setName] = useState(() => {
@@ -82,9 +94,11 @@ export function RegisterPage() {
   });
   const [blurThreshold, setBlurThreshold] = useState(() => {
     try {
-      return Number.parseFloat(window.localStorage.getItem(REGISTER_BLUR_THRESHOLD_KEY) ?? '11') || 11;
+      const saved = Number.parseFloat(window.localStorage.getItem(REGISTER_BLUR_THRESHOLD_KEY) ?? '');
+      const initial = Number.isFinite(saved) ? saved : QUALITY_PRESETS.normal.blur;
+      return normalizeBlurThreshold(initial);
     } catch {
-      return 11;
+      return QUALITY_PRESETS.normal.blur;
     }
   });
   const [autoExcludeWarnings, setAutoExcludeWarnings] = useState(() => {
@@ -917,14 +931,14 @@ export function RegisterPage() {
                 />
               </label>
               <label className="quality-threshold-item">
-                <span>Blur &lt; {blurThreshold.toFixed(1)}</span>
+                <span>Blur &lt; {blurThreshold.toFixed(2)}</span>
                 <input
                   type="range"
-                  min={4}
-                  max={24}
-                  step={0.5}
+                  min={BLUR_THRESHOLD_MIN}
+                  max={BLUR_THRESHOLD_MAX}
+                  step={0.25}
                   value={blurThreshold}
-                  onChange={(e) => setBlurThreshold(Number(e.target.value))}
+                  onChange={(e) => setBlurThreshold(normalizeBlurThreshold(Number(e.target.value)))}
                 />
               </label>
             </div>
