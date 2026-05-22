@@ -10,6 +10,7 @@ import time
 import cv2
 import numpy as np
 from PIL import Image
+import platform
 
 try:
     import torch
@@ -130,7 +131,20 @@ class SearchService:
     def _open_capture(self, source: str) -> cv2.VideoCapture:
         s = str(source).strip()
         if s.isdigit() or (s.startswith('-') and s[1:].isdigit()):
-            return cv2.VideoCapture(int(s))
+            idx = int(s)
+            if platform.system() == 'Windows':
+                cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+                return cv2.VideoCapture(idx, cv2.CAP_MSMF)
+            return cv2.VideoCapture(idx)
+        if platform.system() == 'Windows':
+            cap = cv2.VideoCapture(s, cv2.CAP_DSHOW)
+            if cap.isOpened():
+                return cap
+            cap.release()
+            return cv2.VideoCapture(s, cv2.CAP_MSMF)
         return cv2.VideoCapture(s)
 
     def _resolve_index_media_path(self, raw_path: str, media_dir: Path) -> tuple[Path, bool]:

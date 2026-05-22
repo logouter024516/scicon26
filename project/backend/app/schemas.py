@@ -27,6 +27,14 @@ class CaptureStateResponse(BaseModel):
     cameraSource: str = ''
 
 
+class CaptureProbeItem(BaseModel):
+    index: int
+    ok: bool
+    width: int = 0
+    height: int = 0
+    previewFile: str = ''
+
+
 class SearchResultItem(BaseModel):
     clipId: str
     score: float

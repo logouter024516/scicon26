@@ -1,5 +1,6 @@
 import type {
   CaptureStateDto,
+  CaptureProbeItemDto,
   ClipDto,
   HealthDto,
   LiveResultDto,
@@ -34,10 +35,18 @@ async function http<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const apiClient = {
-  capturePreviewUrl(cacheBust?: number): string {
+  capturePreviewUrl(cacheBust?: number, cameraId?: string): string {
     if (USE_MOCK) return '';
-    const q = typeof cacheBust === 'number' ? `?t=${cacheBust}` : '';
-    return `${API_BASE}/api/v1/capture/preview${q}`;
+    const cid = cameraId ? `cameraId=${encodeURIComponent(cameraId)}` : '';
+    const t = typeof cacheBust === 'number' ? `t=${cacheBust}` : '';
+    const q = [cid, t].filter(Boolean).join('&');
+    return `${API_BASE}/api/v1/capture/preview${q ? `?${q}` : ''}`;
+  },
+
+  captureProbePreviewUrl(cameraIndex: number, cacheBust?: number): string {
+    if (USE_MOCK) return '';
+    const q = typeof cacheBust === 'number' ? `&t=${cacheBust}` : '';
+    return `${API_BASE}/api/v1/capture/probe-preview?cameraIndex=${cameraIndex}${q}`;
   },
 
   liveFrameUrl(cameraIndex = 0, cacheBust?: number): string {
@@ -92,22 +101,29 @@ export const apiClient = {
     });
   },
 
-  async captureState(): Promise<CaptureStateDto> {
+  async captureState(cameraId?: string): Promise<CaptureStateDto> {
     if (USE_MOCK) return mockCapture;
-    return http<CaptureStateDto>('/api/v1/capture/state');
+    const q = cameraId ? `?cameraId=${encodeURIComponent(cameraId)}` : '';
+    return http<CaptureStateDto>(`/api/v1/capture/state${q}`);
   },
 
-  async startCapture(cameraIndex: number): Promise<CaptureStateDto> {
+  async captureProbe(maxIndex = 4): Promise<CaptureProbeItemDto[]> {
+    if (USE_MOCK) return [{ index: 0, ok: true, width: 640, height: 480 }];
+    return http<CaptureProbeItemDto[]>(`/api/v1/capture/probe?maxIndex=${maxIndex}`);
+  },
+
+  async startCapture(cameraIndex: number, cameraId?: string): Promise<CaptureStateDto> {
     if (USE_MOCK) return { running: true, cameraIndex };
     return http<CaptureStateDto>('/api/v1/capture/start', {
       method: 'POST',
-      body: JSON.stringify({ cameraIndex }),
+      body: JSON.stringify({ cameraIndex, cameraId }),
     });
   },
 
-  async stopCapture(): Promise<CaptureStateDto> {
+  async stopCapture(cameraId?: string): Promise<CaptureStateDto> {
     if (USE_MOCK) return { running: false, cameraIndex: 0 };
-    return http<CaptureStateDto>('/api/v1/capture/stop', { method: 'POST' });
+    const q = cameraId ? `?cameraId=${encodeURIComponent(cameraId)}` : '';
+    return http<CaptureStateDto>(`/api/v1/capture/stop${q}`, { method: 'POST' });
   },
 
   async liveSearch(query: string, cameraIndex = 0): Promise<LiveResultDto> {

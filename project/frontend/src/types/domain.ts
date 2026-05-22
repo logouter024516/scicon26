@@ -22,6 +22,16 @@ export interface HealthDto {
 export interface CaptureStateDto {
   running: boolean;
   cameraIndex: number;
+  cameraId?: string;
+  cameraSource?: string;
+}
+
+export interface CaptureProbeItemDto {
+  index: number;
+  ok: boolean;
+  width?: number;
+  height?: number;
+  previewFile?: string;
 }
 
 export interface LiveResultDto {

@@ -7,9 +7,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 import re
+import logging
 
 import cv2
 import numpy as np
+import platform
 
 from app.config import Paths
 from app.settings import AppSettings
@@ -39,6 +41,7 @@ class CaptureService:
         self._state = CaptureState(running=False, camera_index=0, camera_id='ambient_cam_0', camera_source='0')
         self._lock = threading.Lock()
         self._workers: dict[str, _Worker] = {}
+        self._log = logging.getLogger('missingfind.capture')
 
     def _safe_camera_id(self, camera_id: str) -> str:
         return re.sub(r'[^a-zA-Z0-9_-]+', '_', camera_id).strip('_') or 'ambient_cam_0'
@@ -93,8 +96,30 @@ class CaptureService:
     def _open_capture(self, camera_source: str) -> cv2.VideoCapture:
         src = str(camera_source).strip()
         if src.isdigit() or (src.startswith('-') and src[1:].isdigit()):
-            return cv2.VideoCapture(int(src))
+            idx = int(src)
+            if platform.system() == 'Windows':
+                cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+                if cap.isOpened():
+                    return cap
+                cap.release()
+                return cv2.VideoCapture(idx, cv2.CAP_MSMF)
+            return cv2.VideoCapture(idx)
+        if platform.system() == 'Windows':
+            cap = cv2.VideoCapture(src, cv2.CAP_DSHOW)
+            if cap.isOpened():
+                return cap
+            cap.release()
+            return cv2.VideoCapture(src, cv2.CAP_MSMF)
         return cv2.VideoCapture(src)
+
+    def _configure_capture(self, cap: cv2.VideoCapture) -> None:
+        try:
+            w, h = self.settings.camera.resolution
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, int(w))
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, int(h))
+            cap.set(cv2.CAP_PROP_FPS, int(self.settings.camera.fps))
+        except Exception:
+            pass
 
     def start(self, camera_index: int = 0, camera_id: str | None = None, camera_source: str | None = None) -> CaptureState:
         cid, csrc, cidx = self._resolve_camera(camera_index=camera_index, camera_id=camera_id, camera_source=camera_source)
@@ -170,10 +195,19 @@ class CaptureService:
 
     def _run(self, camera_id: str, camera_source: str, stop_event: threading.Event) -> None:
         cap = self._open_capture(camera_source)
+        self._configure_capture(cap)
         if not cap.isOpened():
+            self._log.warning('capture open failed: %s', camera_source)
             with self._lock:
                 self._workers.pop(camera_id, None)
             return
+
+        # warmup
+        for _ in range(5):
+            ok, _ = cap.read()
+            if ok:
+                break
+            time.sleep(0.05)
 
         fps = max(1, int(self.settings.camera.fps))
         pre_buffer = deque(maxlen=fps * int(self.settings.capture.pre_buffer_sec))
@@ -183,11 +217,24 @@ class CaptureService:
         last_motion = 0.0
         cooldown_until = 0.0
 
+        fail_count = 0
         while not stop_event.is_set():
             ok, frame = cap.read()
-            if not ok:
-                time.sleep(0.04)
+            if not ok or frame is None:
+                fail_count += 1
+                if fail_count >= 10:
+                    cap.release()
+                    self._log.warning('capture read failed; reopening: %s', camera_source)
+                    time.sleep(0.2)
+                    cap = self._open_capture(camera_source)
+                    self._configure_capture(cap)
+                    if not cap.isOpened():
+                        time.sleep(0.4)
+                    fail_count = 0
+                else:
+                    time.sleep(0.04)
                 continue
+            fail_count = 0
 
             pre_buffer.append(frame.copy())
             cv2.imwrite(str(self._preview_path(camera_id)), frame)
